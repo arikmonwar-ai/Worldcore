@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Compare | WORLDCORE</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="css/style.css">
+<style>
+  /* Page-specific override: white text on this page only */
+  body, p, h1, h2, h3, h4, .lead, .text-secondary, .table, .table td, .table th{
+    color:#ffffff !important;
+  }
+</style>
+</head>
+<body><nav class="navbar navbar-dark bg-dark"><div class="container"><a class="navbar-brand fw-bold" href="index.html">🌍 WORLDCORE</a><div><a class="btn btn-outline-light me-2" href="index.html">🏠 Home</a><a class="btn btn-outline-light" href="countries.html">Countries</a></div></div></nav>
+<main class="container py-5"><h1>📊 Country Comparison</h1><p class="text-secondary">Select two countries to compare factual information side-by-side.</p><div class="row g-3"><div class="col-md-6"><select id="a" class="form-select form-select-lg"></select></div><div class="col-md-6"><select id="b" class="form-select form-select-lg"></select></div></div><div id="result" class="mt-4"></div></main>
+<script>
+const d = {
+  Select: {flag:"",continent:"",capital:"",currency:"",language:"",population:"",area:"",gdp:"",lifeExpectancy:""},
+  Bangladesh: {flag:"🇧🇩",continent:"Asia",capital:"Dhaka",currency:"Bangladeshi Taka",language:"Bangla",population:"~173 million",area:"~148,460 km²",gdp:"~$460 billion (approx.)",lifeExpectancy:"~73 years"},
+  Japan: {flag:"🇯🇵",continent:"Asia",capital:"Tokyo",currency:"Japanese Yen",language:"Japanese",population:"~124 million",area:"~377,975 km²",gdp:"~$4.1 trillion (approx.)",lifeExpectancy:"~84 years"},
+  France: {flag:"🇫🇷",continent:"Europe",capital:"Paris",currency:"Euro",language:"French",population:"~68 million",area:"~551,695 km²",gdp:"~$3.1 trillion (approx.)",lifeExpectancy:"~83 years"},
+  Brazil: {flag:"🇧🇷",continent:"South America",capital:"Brasília",currency:"Brazilian Real",language:"Portuguese",population:"~216 million",area:"~8.5 million km²",gdp:"~$2.2 trillion (approx.)",lifeExpectancy:"~76 years"},
+  India: {flag:"🇮🇳",continent:"Asia",capital:"New Delhi",currency:"Indian Rupee",language:"Hindi, English, and 20+ others",population:"~1.44 billion",area:"~3.29 million km²",gdp:"~$3.9 trillion (approx.)",lifeExpectancy:"~71 years"},
+  Canada: {flag:"🇨🇦",continent:"North America",capital:"Ottawa",currency:"Canadian Dollar",language:"English and French",population:"~40 million",area:"~9.98 million km²",gdp:"~$2.2 trillion (approx.)",lifeExpectancy:"~82 years"},
+  Australia: {flag:"🇦🇺",continent:"Oceania",capital:"Canberra",currency:"Australian Dollar",language:"English",population:"~26 million",area:"~7.69 million km²",gdp:"~$1.8 trillion (approx.)",lifeExpectancy:"~83 years"},
+  Egypt: {flag:"🇪🇬",continent:"Africa",capital:"Cairo",currency:"Egyptian Pound",language:"Arabic",population:"~112 million",area:"~1.01 million km²",gdp:"~$380 billion (approx.)",lifeExpectancy:"~72 years"},
+  "United Kingdom": {flag:"🇬🇧",continent:"Europe",capital:"London",currency:"Pound Sterling",language:"English",population:"~68 million",area:"~243,610 km²",gdp:"~$3.3 trillion (approx.)",lifeExpectancy:"~81 years"},
+  "United States": {flag:"🇺🇸",continent:"North America",capital:"Washington, D.C.",currency:"US Dollar",language:"English",population:"~335 million",area:"~9.83 million km²",gdp:"~$27 trillion (approx.)",lifeExpectancy:"~79 years"},
+  China: {flag:"🇨🇳",continent:"Asia",capital:"Beijing",currency:"Renminbi",language:"Mandarin",population:"~1.41 billion",area:"~9.60 million km²",gdp:"~$17.8 trillion (approx.)",lifeExpectancy:"~78 years"},
+  Germany: {flag:"🇩🇪",continent:"Europe",capital:"Berlin",currency:"Euro",language:"German",population:"~84 million",area:"~357,022 km²",gdp:"~$4.4 trillion (approx.)",lifeExpectancy:"~81 years"},
+  Italy: {flag:"🇮🇹",continent:"Europe",capital:"Rome",currency:"Euro",language:"Italian",population:"~59 million",area:"~301,340 km²",gdp:"~$2.2 trillion (approx.)",lifeExpectancy:"~83 years"},
+  Russia: {flag:"🇷🇺",continent:"Europe/Asia",capital:"Moscow",currency:"Russian Ruble",language:"Russian",population:"~144 million",area:"~17.1 million km²",gdp:"~$2.0 trillion (approx.)",lifeExpectancy:"~73 years"},
+  Mexico: {flag:"🇲🇽",continent:"North America",capital:"Mexico City",currency:"Mexican Peso",language:"Spanish",population:"~129 million",area:"~1.96 million km²",gdp:"~$1.5 trillion (approx.)",lifeExpectancy:"~75 years"},
+  "South Korea": {flag:"🇰🇷",continent:"Asia",capital:"Seoul",currency:"South Korean Won",language:"Korean",population:"~51 million",area:"~100,210 km²",gdp:"~$1.7 trillion (approx.)",lifeExpectancy:"~84 years"},
+  "South Africa": {flag:"🇿🇦",continent:"Africa",capital:"Pretoria",currency:"South African Rand",language:"12 official languages",population:"~60 million",area:"~1.22 million km²",gdp:"~$380 billion (approx.)",lifeExpectancy:"~65 years"},
+  Nigeria: {flag:"🇳🇬",continent:"Africa",capital:"Abuja",currency:"Nigerian Naira",language:"English",population:"~224 million",area:"~923,768 km²",gdp:"~$360 billion (approx.)",lifeExpectancy:"~53 years"},
+  "Saudi Arabia": {flag:"🇸🇦",continent:"Asia",capital:"Riyadh",currency:"Saudi Riyal",language:"Arabic",population:"~36 million",area:"~2.15 million km²",gdp:"~$1.1 trillion (approx.)",lifeExpectancy:"~76 years"},
+  Turkey: {flag:"🇹🇷",continent:"Europe/Asia",capital:"Ankara",currency:"Turkish Lira",language:"Turkish",population:"~85 million",area:"~783,562 km²",gdp:"~$1.1 trillion (approx.)",lifeExpectancy:"~76 years"},
+  Argentina: {flag:"🇦🇷",continent:"South America",capital:"Buenos Aires",currency:"Argentine Peso",language:"Spanish",population:"~46 million",area:"~2.78 million km²",gdp:"~$640 billion (approx.)",lifeExpectancy:"~76 years"},
+  Indonesia: {flag:"🇮🇩",continent:"Asia",capital:"Jakarta",currency:"Indonesian Rupiah",language:"Indonesian",population:"~277 million",area:"~1.90 million km²",gdp:"~$1.4 trillion (approx.)",lifeExpectancy:"~68 years"},
+  Spain: {flag:"🇪🇸",continent:"Europe",capital:"Madrid",currency:"Euro",language:"Spanish",population:"~48 million",area:"~505,990 km²",gdp:"~$1.6 trillion (approx.)",lifeExpectancy:"~83 years"},
+  Pakistan: {flag:"🇵🇰",continent:"Asia",capital:"Islamabad",currency:"Pakistani Rupee",language:"Urdu and English",population:"~241 million",area:"~881,913 km²",gdp:"~$340 billion (approx.)",lifeExpectancy:"~66 years"},
+  Vietnam: {flag:"🇻🇳",continent:"Asia",capital:"Hanoi",currency:"Vietnamese Dong",language:"Vietnamese",population:"~98 million",area:"~331,210 km²",gdp:"~$430 billion (approx.)",lifeExpectancy:"~74 years"},
+
+  Afghanistan: {flag:"🇦🇫",continent:"Asia",capital:"Kabul",currency:"Afghani",language:"Pashto and Dari",population:"~42 million",area:"~652,230 km²",gdp:"~$17 billion (approx.)",lifeExpectancy:"~65 years"},
+  Albania: {flag:"🇦🇱",continent:"Europe",capital:"Tirana",currency:"Albanian Lek",language:"Albanian",population:"~2.8 million",area:"~28,748 km²",gdp:"~$23 billion (approx.)",lifeExpectancy:"~79 years"},
+  Algeria: {flag:"🇩🇿",continent:"Africa",capital:"Algiers",currency:"Algerian Dinar",language:"Arabic and Berber",population:"~46 million",area:"~2.38 million km²",gdp:"~$260 billion (approx.)",lifeExpectancy:"~76 years"},
+  Andorra: {flag:"🇦🇩",continent:"Europe",capital:"Andorra la Vella",currency:"Euro",language:"Catalan",population:"~80,000",area:"~468 km²",gdp:"~$4 billion (approx.)",lifeExpectancy:"~83 years"},
+  Angola: {flag:"🇦🇴",continent:"Africa",capital:"Luanda",currency:"Angolan Kwanza",language:"Portuguese",population:"~37 million",area:"~1.25 million km²",gdp:"~$85 billion (approx.)",lifeExpectancy:"~62 years"},
+  "Antigua and Barbuda": {flag:"🇦🇬",continent:"North America",capital:"Saint John's",currency:"East Caribbean Dollar",language:"English",population:"~100,000",area:"~442 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~78 years"},
+  Armenia: {flag:"🇦🇲",continent:"Asia",capital:"Yerevan",currency:"Armenian Dram",language:"Armenian",population:"~2.8 million",area:"~29,743 km²",gdp:"~$24 billion (approx.)",lifeExpectancy:"~76 years"},
+  Austria: {flag:"🇦🇹",continent:"Europe",capital:"Vienna",currency:"Euro",language:"German",population:"~9.1 million",area:"~83,879 km²",gdp:"~$520 billion (approx.)",lifeExpectancy:"~82 years"},
+  Azerbaijan: {flag:"🇦🇿",continent:"Asia",capital:"Baku",currency:"Azerbaijani Manat",language:"Azerbaijani",population:"~10.4 million",area:"~86,600 km²",gdp:"~$75 billion (approx.)",lifeExpectancy:"~74 years"},
+
+  Bahamas: {flag:"🇧🇸",continent:"North America",capital:"Nassau",currency:"Bahamian Dollar",language:"English",population:"~400,000",area:"~13,880 km²",gdp:"~$14 billion (approx.)",lifeExpectancy:"~74 years"},
+  Bahrain: {flag:"🇧🇭",continent:"Asia",capital:"Manama",currency:"Bahraini Dinar",language:"Arabic",population:"~1.5 million",area:"~778 km²",gdp:"~$45 billion (approx.)",lifeExpectancy:"~79 years"},
+  Bangladesh: {flag:"🇧🇩",continent:"Asia",capital:"Dhaka",currency:"Bangladeshi Taka",language:"Bangla",population:"~173 million",area:"~148,460 km²",gdp:"~$460 billion (approx.)",lifeExpectancy:"~73 years"},
+  Barbados: {flag:"🇧🇧",continent:"North America",capital:"Bridgetown",currency:"Barbadian Dollar",language:"English",population:"~280,000",area:"~430 km²",gdp:"~$6 billion (approx.)",lifeExpectancy:"~77 years"},
+  Belarus: {flag:"🇧🇾",continent:"Europe",capital:"Minsk",currency:"Belarusian Ruble",language:"Belarusian and Russian",population:"~9.2 million",area:"~207,600 km²",gdp:"~$75 billion (approx.)",lifeExpectancy:"~75 years"},
+  Belgium: {flag:"🇧🇪",continent:"Europe",capital:"Brussels",currency:"Euro",language:"Dutch, French and German",population:"~11.8 million",area:"~30,528 km²",gdp:"~$650 billion (approx.)",lifeExpectancy:"~82 years"},
+  Belize: {flag:"🇧🇿",continent:"North America",capital:"Belmopan",currency:"Belize Dollar",language:"English",population:"~410,000",area:"~22,966 km²",gdp:"~$3 billion (approx.)",lifeExpectancy:"~75 years"},
+  Benin: {flag:"🇧🇯",continent:"Africa",capital:"Porto-Novo",currency:"West African CFA Franc",language:"French",population:"~14 million",area:"~114,763 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~60 years"},
+  Bhutan: {flag:"🇧🇹",continent:"Asia",capital:"Thimphu",currency:"Bhutanese Ngultrum",language:"Dzongkha",population:"~790,000",area:"~38,394 km²",gdp:"~$3 billion (approx.)",lifeExpectancy:"~72 years"},
+  Bolivia: {flag:"🇧🇴",continent:"South America",capital:"Sucre",currency:"Boliviano",language:"Spanish and Indigenous languages",population:"~12 million",area:"~1.10 million km²",gdp:"~$46 billion (approx.)",lifeExpectancy:"~64 years"},
+  BosniaAndHerzegovina: {flag:"🇧🇦",continent:"Europe",capital:"Sarajevo",currency:"Convertible Mark",language:"Bosnian, Croatian and Serbian",population:"~3.2 million",area:"~51,197 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~77 years"},
+  Botswana: {flag:"🇧🇼",continent:"Africa",capital:"Gaborone",currency:"Botswana Pula",language:"English and Setswana",population:"~2.5 million",area:"~581,730 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~69 years"},
+  Brunei: {flag:"🇧🇳",continent:"Asia",capital:"Bandar Seri Begawan",currency:"Brunei Dollar",language:"Malay",population:"~450,000",area:"~5,765 km²",gdp:"~$16 billion (approx.)",lifeExpectancy:"~75 years"},
+  Bulgaria: {flag:"🇧🇬",continent:"Europe",capital:"Sofia",currency:"Bulgarian Lev",language:"Bulgarian",population:"~6.4 million",area:"~110,994 km²",gdp:"~$100 billion (approx.)",lifeExpectancy:"~75 years"},
+  "Burkina Faso": {flag:"🇧🇫",continent:"Africa",capital:"Ouagadougou",currency:"West African CFA Franc",language:"French",population:"~23 million",area:"~274,200 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~61 years"},
+  Burundi: {flag:"🇧🇮",continent:"Africa",capital:"Gitega",currency:"Burundian Franc",language:"Kirundi and French",population:"~13 million",area:"~27,834 km²",gdp:"~$4 billion (approx.)",lifeExpectancy:"~62 years"},
+
+  CaboVerde: {flag:"🇨🇻",continent:"Africa",capital:"Praia",currency:"Cape Verdean Escudo",language:"Portuguese",population:"~500,000",area:"~4,033 km²",gdp:"~$3 billion (approx.)",lifeExpectancy:"~74 years"},
+  Cambodia: {flag:"🇰🇭",continent:"Asia",capital:"Phnom Penh",currency:"Cambodian Riel",language:"Khmer",population:"~17 million",area:"~181,035 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~70 years"},
+  Cameroon: {flag:"🇨🇲",continent:"Africa",capital:"Yaoundé",currency:"Central African CFA Franc",language:"French and English",population:"~28 million",area:"~475,442 km²",gdp:"~$50 billion (approx.)",lifeExpectancy:"~60 years"},
+  "Central African Republic": {flag:"🇨🇫",continent:"Africa",capital:"Bangui",currency:"Central African CFA Franc",language:"French and Sangho",population:"~5.7 million",area:"~622,984 km²",gdp:"~$3 billion (approx.)",lifeExpectancy:"~54 years"},
+  Chad: {flag:"🇹🇩",continent:"Africa",capital:"N'Djamena",currency:"Central African CFA Franc",language:"French and Arabic",population:"~18 million",area:"~1.28 million km²",gdp:"~$13 billion (approx.)",lifeExpectancy:"~54 years"},
+  Chile: {flag:"🇨🇱",continent:"South America",capital:"Santiago",currency:"Chilean Peso",language:"Spanish",population:"~20 million",area:"~756,102 km²",gdp:"~$335 billion (approx.)",lifeExpectancy:"~80 years"},
+  Colombia: {flag:"🇨🇴",continent:"South America",capital:"Bogotá",currency:"Colombian Peso",language:"Spanish",population:"~52 million",area:"~1.14 million km²",gdp:"~$365 billion (approx.)",lifeExpectancy:"~77 years"},
+  Comoros: {flag:"🇰🇲",continent:"Africa",capital:"Moroni",currency:"Comorian Franc",language:"Comorian, Arabic and French",population:"~850,000",area:"~1,862 km²",gdp:"~$1 billion (approx.)",lifeExpectancy:"~65 years"},
+  "Republic of the Congo": {flag:"🇨🇬",continent:"Africa",capital:"Brazzaville",currency:"Central African CFA Franc",language:"French",population:"~6 million",area:"~342,000 km²",gdp:"~$14 billion (approx.)",lifeExpectancy:"~64 years"},
+  "Democratic Republic of the Congo": {flag:"🇨🇩",continent:"Africa",capital:"Kinshasa",currency:"Congolese Franc",language:"French",population:"~110 million",area:"~2.34 million km²",gdp:"~$70 billion (approx.)",lifeExpectancy:"~60 years"},
+  CostaRica: {flag:"🇨🇷",continent:"North America",capital:"San José",currency:"Costa Rican Colón",language:"Spanish",population:"~5.2 million",area:"~51,100 km²",gdp:"~$90 billion (approx.)",lifeExpectancy:"~80 years"},
+  Croatia: {flag:"🇭🇷",continent:"Europe",capital:"Zagreb",currency:"Euro",language:"Croatian",population:"~3.9 million",area:"~56,594 km²",gdp:"~$85 billion (approx.)",lifeExpectancy:"~78 years"},
+  Cuba: {flag:"🇨🇺",continent:"North America",capital:"Havana",currency:"Cuban Peso",language:"Spanish",population:"~11 million",area:"~109,884 km²",gdp:"~$100 billion (approx.)",lifeExpectancy:"~79 years"},
+  Cyprus: {flag:"🇨🇾",continent:"Europe",capital:"Nicosia",currency:"Euro",language:"Greek and Turkish",population:"~1.3 million",area:"~9,251 km²",gdp:"~$34 billion (approx.)",lifeExpectancy:"~81 years"},
+  Czechia: {flag:"🇨🇿",continent:"Europe",capital:"Prague",currency:"Czech Koruna",language:"Czech",population:"~10.9 million",area:"~78,871 km²",gdp:"~$330 billion (approx.)",lifeExpectancy:"~79 years"},
+
+  Denmark: {flag:"🇩🇰",continent:"Europe",capital:"Copenhagen",currency:"Danish Krone",language:"Danish",population:"~6 million",area:"~43,094 km²",gdp:"~$420 billion (approx.)",lifeExpectancy:"~81 years"},
+  Djibouti: {flag:"🇩🇯",continent:"Africa",capital:"Djibouti",currency:"Djiboutian Franc",language:"French and Arabic",population:"~1.1 million",area:"~23,200 km²",gdp:"~$4 billion (approx.)",lifeExpectancy:"~66 years"},
+  Dominica: {flag:"🇩🇲",continent:"North America",capital:"Roseau",currency:"East Caribbean Dollar",language:"English",population:"~70,000",area:"~751 km²",gdp:"~$0.7 billion (approx.)",lifeExpectancy:"~74 years"},
+  "Dominican Republic": {flag:"🇩🇴",continent:"North America",capital:"Santo Domingo",currency:"Dominican Peso",language:"Spanish",population:"~11 million",area:"~48,671 km²",gdp:"~$125 billion (approx.)",lifeExpectancy:"~73 years"},
+  Ecuador: {flag:"🇪🇨",continent:"South America",capital:"Quito",currency:"US Dollar",language:"Spanish",population:"~18 million",area:"~276,841 km²",gdp:"~$120 billion (approx.)",lifeExpectancy:"~77 years"},
+  ElSalvador: {flag:"🇸🇻",continent:"North America",capital:"San Salvador",currency:"US Dollar",language:"Spanish",population:"~6.3 million",area:"~21,041 km²",gdp:"~$35 billion (approx.)",lifeExpectancy:"~73 years"},
+  "Equatorial Guinea": {flag:"🇬🇶",continent:"Africa",capital:"Malabo",currency:"Central African CFA Franc",language:"Spanish and French",population:"~1.7 million",area:"~28,051 km²",gdp:"~$12 billion (approx.)",lifeExpectancy:"~59 years"},
+  Eritrea: {flag:"🇪🇷",continent:"Africa",capital:"Asmara",currency:"Nakfa",language:"Tigrinya, Arabic and English",population:"~3.7 million",area:"~117,600 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~67 years"},
+  Estonia: {flag:"🇪🇪",continent:"Europe",capital:"Tallinn",currency:"Euro",language:"Estonian",population:"~1.4 million",area:"~45,227 km²",gdp:"~$40 billion (approx.)",lifeExpectancy:"~79 years"},
+  Eswatini: {flag:"🇸🇿",continent:"Africa",capital:"Mbabane",currency:"Lilangeni",language:"Swazi and English",population:"~1.2 million",area:"~17,364 km²",gdp:"~$5 billion (approx.)",lifeExpectancy:"~59 years"},
+  Ethiopia: {flag:"🇪🇹",continent:"Africa",capital:"Addis Ababa",currency:"Ethiopian Birr",language:"Amharic and others",population:"~126 million",area:"~1.10 million km²",gdp:"~$160 billion (approx.)",lifeExpectancy:"~66 years"},
+
+  Fiji: {flag:"🇫🇯",continent:"Oceania",capital:"Suva",currency:"Fijian Dollar",language:"English, Fijian and Fiji Hindi",population:"~930,000",area:"~18,274 km²",gdp:"~$5 billion (approx.)",lifeExpectancy:"~68 years"},
+  Finland: {flag:"🇫🇮",continent:"Europe",capital:"Helsinki",currency:"Euro",language:"Finnish and Swedish",population:"~5.6 million",area:"~338,455 km²",gdp:"~$300 billion (approx.)",lifeExpectancy:"~81 years"},
+  Gabon: {flag:"🇬🇦",continent:"Africa",capital:"Libreville",currency:"Central African CFA Franc",language:"French",population:"~2.4 million",area:"~267,668 km²",gdp:"~$22 billion (approx.)",lifeExpectancy:"~66 years"},
+  Gambia: {flag:"🇬🇲",continent:"Africa",capital:"Banjul",currency:"Gambian Dalasi",language:"English",population:"~2.8 million",area:"~11,295 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~62 years"},
+  Georgia: {flag:"🇬🇪",continent:"Asia",capital:"Tbilisi",currency:"Georgian Lari",language:"Georgian",population:"~3.7 million",area:"~69,700 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~74 years"},
+  Ghana: {flag:"🇬🇭",continent:"Africa",capital:"Accra",currency:"Ghanaian Cedi",language:"English",population:"~34 million",area:"~238,533 km²",gdp:"~$75 billion (approx.)",lifeExpectancy:"~64 years"},
+  Greece: {flag:"🇬🇷",continent:"Europe",capital:"Athens",currency:"Euro",language:"Greek",population:"~10.3 million",area:"~131,957 km²",gdp:"~$240 billion (approx.)",lifeExpectancy:"~81 years"},
+  Grenada: {flag:"🇬🇩",continent:"North America",capital:"St. George's",currency:"East Caribbean Dollar",language:"English",population:"~125,000",area:"~344 km²",gdp:"~$1.4 billion (approx.)",lifeExpectancy:"~75 years"},
+  Guatemala: {flag:"🇬🇹",continent:"North America",capital:"Guatemala City",currency:"Guatemalan Quetzal",language:"Spanish",population:"~18 million",area:"~108,889 km²",gdp:"~$105 billion (approx.)",lifeExpectancy:"~70 years"},
+  Guinea: {flag:"🇬🇳",continent:"Africa",capital:"Conakry",currency:"Guinean Franc",language:"French",population:"~14 million",area:"~245,857 km²",gdp:"~$25 billion (approx.)",lifeExpectancy:"~59 years"},
+  "Guinea-Bissau": {flag:"🇬🇼",continent:"Africa",capital:"Bissau",currency:"West African CFA Franc",language:"Portuguese",population:"~2.1 million",area:"~36,125 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~60 years"},
+  Guyana: {flag:"🇬🇾",continent:"South America",capital:"Georgetown",currency:"Guyanese Dollar",language:"English",population:"~800,000",area:"~214,969 km²",gdp:"~$16 billion (approx.)",lifeExpectancy:"~67 years"},
+  Haiti: {flag:"🇭🇹",continent:"North America",capital:"Port-au-Prince",currency:"Haitian Gourde",language:"French and Haitian Creole",population:"~11.5 million",area:"~27,750 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~64 years"},
+  Honduras: {flag:"🇭🇳",continent:"North America",capital:"Tegucigalpa",currency:"Honduran Lempira",language:"Spanish",population:"~10.6 million",area:"~112,492 km²",gdp:"~$32 billion (approx.)",lifeExpectancy:"~70 years"},
+  Hungary: {flag:"🇭🇺",continent:"Europe",capital:"Budapest",currency:"Hungarian Forint",language:"Hungarian",population:"~9.6 million",area:"~93,028 km²",gdp:"~$210 billion (approx.)",lifeExpectancy:"~77 years"},
+
+  Iceland: {flag:"🇮🇸",continent:"Europe",capital:"Reykjavík",currency:"Icelandic Króna",language:"Icelandic",population:"~400,000",area:"~103,000 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~83 years"},
+  Iran: {flag:"🇮🇷",continent:"Asia",capital:"Tehran",currency:"Iranian Rial",language:"Persian",population:"~89 million",area:"~1.65 million km²",gdp:"~$400 billion (approx.)",lifeExpectancy:"~77 years"},
+  Iraq: {flag:"🇮🇶",continent:"Asia",capital:"Baghdad",currency:"Iraqi Dinar",language:"Arabic and Kurdish",population:"~46 million",area:"~438,317 km²",gdp:"~$250 billion (approx.)",lifeExpectancy:"~71 years"},
+  Ireland: {flag:"🇮🇪",continent:"Europe",capital:"Dublin",currency:"Euro",language:"Irish and English",population:"~5.3 million",area:"~70,273 km²",gdp:"~$550 billion (approx.)",lifeExpectancy:"~83 years"},
+  Israel: {flag:"🇮🇱",continent:"Asia",capital:"Jerusalem",currency:"Israeli New Shekel",language:"Hebrew and Arabic",population:"~10 million",area:"~22,145 km²",gdp:"~$550 billion (approx.)",lifeExpectancy:"~83 years"},
+  Jamaica: {flag:"🇯🇲",continent:"North America",capital:"Kingston",currency:"Jamaican Dollar",language:"English",population:"~2.8 million",area:"~10,991 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~71 years"},
+  Jordan: {flag:"🇯🇴",continent:"Asia",capital:"Amman",currency:"Jordanian Dinar",language:"Arabic",population:"~11 million",area:"~89,342 km²",gdp:"~$50 billion (approx.)",lifeExpectancy:"~75 years"},
+  Kazakhstan: {flag:"🇰🇿",continent:"Asia",capital:"Astana",currency:"Kazakhstani Tenge",language:"Kazakh and Russian",population:"~20 million",area:"~2.72 million km²",gdp:"~$260 billion (approx.)",lifeExpectancy:"~74 years"},
+  Kenya: {flag:"🇰🇪",continent:"Africa",capital:"Nairobi",currency:"Kenyan Shilling",language:"English and Swahili",population:"~55 million",area:"~580,367 km²",gdp:"~$110 billion (approx.)",lifeExpectancy:"~67 years"},
+  Kiribati: {flag:"🇰🇮",continent:"Oceania",capital:"South Tarawa",currency:"Australian Dollar",language:"English and Gilbertese",population:"~130,000",area:"~811 km²",gdp:"~$0.3 billion (approx.)",lifeExpectancy:"~68 years"},
+  Kuwait: {flag:"🇰🇼",continent:"Asia",capital:"Kuwait City",currency:"Kuwaiti Dinar",language:"Arabic",population:"~4.3 million",area:"~17,818 km²",gdp:"~$160 billion (approx.)",lifeExpectancy:"~80 years"},
+  Kyrgyzstan: {flag:"🇰🇬",continent:"Asia",capital:"Bishkek",currency:"Kyrgyzstani Som",language:"Kyrgyz and Russian",population:"~7 million",area:"~199,951 km²",gdp:"~$12 billion (approx.)",lifeExpectancy:"~72 years"},
+
+  Laos: {flag:"🇱🇦",continent:"Asia",capital:"Vientiane",currency:"Lao Kip",language:"Lao",population:"~7.5 million",area:"~236,800 km²",gdp:"~$16 billion (approx.)",lifeExpectancy:"~69 years"},
+  Latvia: {flag:"🇱🇻",continent:"Europe",capital:"Riga",currency:"Euro",language:"Latvian",population:"~1.9 million",area:"~64,589 km²",gdp:"~$43 billion (approx.)",lifeExpectancy:"~75 years"},
+  Lebanon: {flag:"🇱🇧",continent:"Asia",capital:"Beirut",currency:"Lebanese Pound",language:"Arabic",population:"~5.5 million",area:"~10,452 km²",gdp:"~$25 billion (approx.)",lifeExpectancy:"~76 years"},
+  Lesotho: {flag:"🇱🇸",continent:"Africa",capital:"Maseru",currency:"Lesotho Loti",language:"Sesotho and English",population:"~2.3 million",area:"~30,355 km²",gdp:"~$2.5 billion (approx.)",lifeExpectancy:"~54 years"},
+  Liberia: {flag:"🇱🇷",continent:"Africa",capital:"Monrovia",currency:"Liberian Dollar",language:"English",population:"~5.5 million",area:"~111,369 km²",gdp:"~$4 billion (approx.)",lifeExpectancy:"~61 years"},
+  Libya: {flag:"🇱🇾",continent:"Africa",capital:"Tripoli",currency:"Libyan Dinar",language:"Arabic",population:"~7 million",area:"~1.76 million km²",gdp:"~$50 billion (approx.)",lifeExpectancy:"~72 years"},
+  Liechtenstein: {flag:"🇱🇮",continent:"Europe",capital:"Vaduz",currency:"Swiss Franc",language:"German",population:"~40,000",area:"~160 km²",gdp:"~$7 billion (approx.)",lifeExpectancy:"~84 years"},
+  Lithuania: {flag:"🇱🇹",continent:"Europe",capital:"Vilnius",currency:"Euro",language:"Lithuanian",population:"~2.9 million",area:"~65,300 km²",gdp:"~$80 billion (approx.)",lifeExpectancy:"~76 years"},
+  Luxembourg: {flag:"🇱🇺",continent:"Europe",capital:"Luxembourg",currency:"Euro",language:"Luxembourgish, French and German",population:"~670,000",area:"~2,586 km²",gdp:"~$90 billion (approx.)",lifeExpectancy:"~83 years"},
+
+  Madagascar: {flag:"🇲🇬",continent:"Africa",capital:"Antananarivo",currency:"Malagasy Ariary",language:"Malagasy and French",population:"~31 million",area:"~587,041 km²",gdp:"~$17 billion (approx.)",lifeExpectancy:"~65 years"},
+  Malawi: {flag:"🇲🇼",continent:"Africa",capital:"Lilongwe",currency:"Malawian Kwacha",language:"English and Chichewa",population:"~21 million",area:"~118,484 km²",gdp:"~$14 billion (approx.)",lifeExpectancy:"~63 years"},
+  Malaysia: {flag:"🇲🇾",continent:"Asia",capital:"Kuala Lumpur",currency:"Malaysian Ringgit",language:"Malay",population:"~35 million",area:"~330,803 km²",gdp:"~$430 billion (approx.)",lifeExpectancy:"~76 years"},
+  Maldives: {flag:"🇲🇻",continent:"Asia",capital:"Malé",currency:"Maldivian Rufiyaa",language:"Dhivehi",population:"~520,000",area:"~298 km²",gdp:"~$7 billion (approx.)",lifeExpectancy:"~79 years"},
+  Mali: {flag:"🇲🇱",continent:"Africa",capital:"Bamako",currency:"West African CFA Franc",language:"French",population:"~23 million",area:"~1.24 million km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~59 years"},
+  Malta: {flag:"🇲🇹",continent:"Europe",capital:"Valletta",currency:"Euro",language:"Maltese and English",population:"~560,000",area:"~316 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~83 years"},
+  "Marshall Islands": {flag:"🇲🇭",continent:"Oceania",capital:"Majuro",currency:"US Dollar",language:"Marshallese and English",population:"~40,000",area:"~181 km²",gdp:"~$0.3 billion (approx.)",lifeExpectancy:"~72 years"},
+  Mauritania: {flag:"🇲🇷",continent:"Africa",capital:"Nouakchott",currency:"Mauritanian Ouguiya",language:"Arabic",population:"~5 million",area:"~1.03 million km²",gdp:"~$11 billion (approx.)",lifeExpectancy:"~65 years"},
+  Mauritius: {flag:"🇲🇺",continent:"Africa",capital:"Port Louis",currency:"Mauritian Rupee",language:"English, French and Mauritian Creole",population:"~1.3 million",area:"~2,040 km²",gdp:"~$15 billion (approx.)",lifeExpectancy:"~75 years"},
+  Mexico: {flag:"🇲🇽",continent:"North America",capital:"Mexico City",currency:"Mexican Peso",language:"Spanish",population:"~129 million",area:"~1.96 million km²",gdp:"~$1.5 trillion (approx.)",lifeExpectancy:"~75 years"},
+  Micronesia: {flag:"🇫🇲",continent:"Oceania",capital:"Palikir",currency:"US Dollar",language:"English",population:"~115,000",area:"~702 km²",gdp:"~$0.4 billion (approx.)",lifeExpectancy:"~70 years"},
+  Moldova: {flag:"🇲🇩",continent:"Europe",capital:"Chișinău",currency:"Moldovan Leu",language:"Romanian",population:"~2.5 million",area:"~33,846 km²",gdp:"~$17 billion (approx.)",lifeExpectancy:"~71 years"},
+  Monaco: {flag:"🇲🇨",continent:"Europe",capital:"Monaco",currency:"Euro",language:"French",population:"~40,000",area:"~2 km²",gdp:"~$9 billion (approx.)",lifeExpectancy:"~86 years"},
+  Mongolia: {flag:"🇲🇳",continent:"Asia",capital:"Ulaanbaatar",currency:"Mongolian Tögrög",language:"Mongolian",population:"~3.5 million",area:"~1.56 million km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~71 years"},
+  Montenegro: {flag:"🇲🇪",continent:"Europe",capital:"Podgorica",currency:"Euro",language:"Montenegrin",population:"~620,000",area:"~13,812 km²",gdp:"~$8 billion (approx.)",lifeExpectancy:"~77 years"},
+  Morocco: {flag:"🇲🇦",continent:"Africa",capital:"Rabat",currency:"Moroccan Dirham",language:"Arabic and Amazigh",population:"~37 million",area:"~446,550 km²",gdp:"~$145 billion (approx.)",lifeExpectancy:"~75 years"},
+  Mozambique: {flag:"🇲🇿",continent:"Africa",capital:"Maputo",currency:"Mozambican Metical",language:"Portuguese",population:"~34 million",area:"~801,590 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~61 years"},
+  Myanmar: {flag:"🇲🇲",continent:"Asia",capital:"Naypyidaw",currency:"Myanmar Kyat",language:"Burmese",population:"~55 million",area:"~676,578 km²",gdp:"~$65 billion (approx.)",lifeExpectancy:"~67 years"},
+
+  Namibia: {flag:"🇳🇦",continent:"Africa",capital:"Windhoek",currency:"Namibian Dollar",language:"English",population:"~2.6 million",area:"~825,615 km²",gdp:"~$14 billion (approx.)",lifeExpectancy:"~59 years"},
+  Nauru: {flag:"🇳🇷",continent:"Oceania",capital:"Yaren",currency:"Australian Dollar",language:"Nauruan and English",population:"~12,000",area:"~21 km²",gdp:"~$0.2 billion (approx.)",lifeExpectancy:"~65 years"},
+  Nepal: {flag:"🇳🇵",continent:"Asia",capital:"Kathmandu",currency:"Nepalese Rupee",language:"Nepali",population:"~31 million",area:"~147,516 km²",gdp:"~$45 billion (approx.)",lifeExpectancy:"~71 years"},
+  Netherlands: {flag:"🇳🇱",continent:"Europe",capital:"Amsterdam",currency:"Euro",language:"Dutch",population:"~18 million",area:"~41,543 km²",gdp:"~$1.1 trillion (approx.)",lifeExpectancy:"~82 years"},
+  "New Zealand": {flag:"🇳🇿",continent:"Oceania",capital:"Wellington",currency:"New Zealand Dollar",language:"English and Māori",population:"~5.3 million",area:"~268,021 km²",gdp:"~$250 billion (approx.)",lifeExpectancy:"~82 years"},
+  Nicaragua: {flag:"🇳🇮",continent:"North America",capital:"Managua",currency:"Nicaraguan Córdoba",language:"Spanish",population:"~7 million",area:"~130,375 km²",gdp:"~$18 billion (approx.)",lifeExpectancy:"~72 years"},
+  Niger: {flag:"🇳🇪",continent:"Africa",capital:"Niamey",currency:"West African CFA Franc",language:"French",population:"~27 million",area:"~1.27 million km²",gdp:"~$17 billion (approx.)",lifeExpectancy:"~62 years"},
+  NorthKorea: {flag:"🇰🇵",continent:"Asia",capital:"Pyongyang",currency:"North Korean Won",language:"Korean",population:"~26 million",area:"~120,538 km²",gdp:"~$18 billion (estimated)",lifeExpectancy:"~72 years"},
+  "North Macedonia": {flag:"🇲🇰",continent:"Europe",capital:"Skopje",currency:"Macedonian Denar",language:"Macedonian",population:"~1.8 million",area:"~25,713 km²",gdp:"~$15 billion (approx.)",lifeExpectancy:"~75 years"},
+  Norway: {flag:"🇳🇴",continent:"Europe",capital:"Oslo",currency:"Norwegian Krone",language:"Norwegian",population:"~5.5 million",area:"~385,207 km²",gdp:"~$500 billion (approx.)",lifeExpectancy:"~83 years"},
+  Oman: {flag:"🇴🇲",continent:"Asia",capital:"Muscat",currency:"Omani Rial",language:"Arabic",population:"~4.7 million",area:"~309,500 km²",gdp:"~$110 billion (approx.)",lifeExpectancy:"~72 years"},
+
+  Palau: {flag:"🇵🇼",continent:"Oceania",capital:"Ngerulmud",currency:"US Dollar",language:"Palauan and English",population:"~18,000",area:"~459 km²",gdp:"~$0.3 billion (approx.)",lifeExpectancy:"~70 years"},
+  Palestine: {flag:"🇵🇸",continent:"Asia",capital:"East Jerusalem",currency:"Israeli New Shekel",language:"Arabic",population:"~5.5 million",area:"~6,020 km²",gdp:"~$18 billion (approx.)",lifeExpectancy:"~74 years"},
+  Panama: {flag:"🇵🇦",continent:"North America",capital:"Panama City",currency:"Balboa / US Dollar",language:"Spanish",population:"~4.5 million",area:"~75,417 km²",gdp:"~$85 billion (approx.)",lifeExpectancy:"~78 years"},
+  "Papua New Guinea": {flag:"🇵🇬",continent:"Oceania",capital:"Port Moresby",currency:"Papua New Guinean Kina",language:"English and Tok Pisin",population:"~10 million",area:"~462,840 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~66 years"},
+  Paraguay: {flag:"🇵🇾",continent:"South America",capital:"Asunción",currency:"Paraguayan Guaraní",language:"Spanish and Guaraní",population:"~7 million",area:"~406,752 km²",gdp:"~$45 billion (approx.)",lifeExpectancy:"~74 years"},
+  Peru: {flag:"🇵🇪",continent:"South America",capital:"Lima",currency:"Peruvian Sol",language:"Spanish, Quechua and Aymara",population:"~34 million",area:"~1.29 million km²",gdp:"~$270 billion (approx.)",lifeExpectancy:"~72 years"},
+  Philippines: {flag:"🇵🇭",continent:"Asia",capital:"Manila",currency:"Philippine Peso",language:"Filipino and English",population:"~117 million",area:"~300,000 km²",gdp:"~$440 billion (approx.)",lifeExpectancy:"~70 years"},
+  Poland: {flag:"🇵🇱",continent:"Europe",capital:"Warsaw",currency:"Polish Złoty",language:"Polish",population:"~37.6 million",area:"~312,696 km²",gdp:"~$800 billion (approx.)",lifeExpectancy:"~78 years"},
+  Portugal: {flag:"🇵🇹",continent:"Europe",capital:"Lisbon",currency:"Euro",language:"Portuguese",population:"~10.3 million",area:"~92,212 km²",gdp:"~$290 billion (approx.)",lifeExpectancy:"~82 years"},
+
+  Qatar: {flag:"🇶🇦",continent:"Asia",capital:"Doha",currency:"Qatari Riyal",language:"Arabic",population:"~3 million",area:"~11,586 km²",gdp:"~$220 billion (approx.)",lifeExpectancy:"~81 years"},
+  Romania: {flag:"🇷🇴",continent:"Europe",capital:"Bucharest",currency:"Romanian Leu",language:"Romanian",population:"~19 million",area:"~238,397 km²",gdp:"~$350 billion (approx.)",lifeExpectancy:"~76 years"},
+  Rwanda: {flag:"🇷🇼",continent:"Africa",capital:"Kigali",currency:"Rwandan Franc",language:"Kinyarwanda, English and French",population:"~14 million",area:"~26,338 km²",gdp:"~$14 billion (approx.)",lifeExpectancy:"~67 years"},
+
+  "Saint Kitts and Nevis": {flag:"🇰🇳",continent:"North America",capital:"Basseterre",currency:"East Caribbean Dollar",language:"English",population:"~47,000",area:"~261 km²",gdp:"~$1 billion (approx.)",lifeExpectancy:"~72 years"},
+  "Saint Lucia": {flag:"🇱🇨",continent:"North America",capital:"Castries",currency:"East Caribbean Dollar",language:"English",population:"~180,000",area:"~616 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~75 years"},
+  "Saint Vincent and the Grenadines": {flag:"🇻🇨",continent:"North America",capital:"Kingstown",currency:"East Caribbean Dollar",language:"English",population:"~100,000",area:"~389 km²",gdp:"~$1 billion (approx.)",lifeExpectancy:"~73 years"},
+  Samoa: {flag:"🇼🇸",continent:"Oceania",capital:"Apia",currency:"Samoan Tala",language:"Samoan and English",population:"~225,000",area:"~2,842 km²",gdp:"~$1 billion (approx.)",lifeExpectancy:"~73 years"},
+  "San Marino": {flag:"🇸🇲",continent:"Europe",capital:"San Marino",currency:"Euro",language:"Italian",population:"~34,000",area:"~61 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~85 years"},
+  "São Tomé and Príncipe": {flag:"🇸🇹",continent:"Africa",capital:"São Tomé",currency:"Dobra",language:"Portuguese",population:"~230,000",area:"~964 km²",gdp:"~$0.7 billion (approx.)",lifeExpectancy:"~67 years"},
+  Senegal: {flag:"🇸🇳",continent:"Africa",capital:"Dakar",currency:"West African CFA Franc",language:"French",population:"~18 million",area:"~196,722 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~68 years"},
+  Serbia: {flag:"🇷🇸",continent:"Europe",capital:"Belgrade",currency:"Serbian Dinar",language:"Serbian",population:"~6.6 million",area:"~77,474 km²",gdp:"~$80 billion (approx.)",lifeExpectancy:"~75 years"},
+  Seychelles: {flag:"🇸🇨",continent:"Africa",capital:"Victoria",currency:"Seychellois Rupee",language:"Seychellois Creole, English and French",population:"~120,000",area:"~459 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~73 years"},
+  "Sierra Leone": {flag:"🇸🇱",continent:"Africa",capital:"Freetown",currency:"Sierra Leonean Leone",language:"English",population:"~8.5 million",area:"~71,740 km²",gdp:"~$5 billion (approx.)",lifeExpectancy:"~61 years"},
+  Singapore: {flag:"🇸🇬",continent:"Asia",capital:"Singapore",currency:"Singapore Dollar",language:"English, Malay, Mandarin and Tamil",population:"~6 million",area:"~734 km²",gdp:"~$500 billion (approx.)",lifeExpectancy:"~84 years"},
+  Slovakia: {flag:"🇸🇰",continent:"Europe",capital:"Bratislava",currency:"Euro",language:"Slovak",population:"~5.4 million",area:"~49,035 km²",gdp:"~$140 billion (approx.)",lifeExpectancy:"~77 years"},
+  Slovenia: {flag:"🇸🇮",continent:"Europe",capital:"Ljubljana",currency:"Euro",language:"Slovenian",population:"~2.1 million",area:"~20,273 km²",gdp:"~$70 billion (approx.)",lifeExpectancy:"~82 years"},
+  "Solomon Islands": {flag:"🇸🇧",continent:"Oceania",capital:"Honiara",currency:"Solomon Islands Dollar",language:"English",population:"~750,000",area:"~28,896 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~70 years"},
+  Somalia: {flag:"🇸🇴",continent:"Africa",capital:"Mogadishu",currency:"Somali Shilling",language:"Somali and Arabic",population:"~18 million",area:"~637,657 km²",gdp:"~$12 billion (approx.)",lifeExpectancy:"~56 years"},
+  "South Sudan": {flag:"🇸🇸",continent:"Africa",capital:"Juba",currency:"South Sudanese Pound",language:"English",population:"~11 million",area:"~619,745 km²",gdp:"~$5 billion (approx.)",lifeExpectancy:"~57 years"},
+  SriLanka: {flag:"🇱🇰",continent:"Asia",capital:"Sri Jayawardenepura Kotte",currency:"Sri Lankan Rupee",language:"Sinhala and Tamil",population:"~22 million",area:"~65,610 km²",gdp:"~$85 billion (approx.)",lifeExpectancy:"~77 years"},
+  Sudan: {flag:"🇸🇩",continent:"Africa",capital:"Khartoum",currency:"Sudanese Pound",language:"Arabic and English",population:"~49 million",area:"~1.89 million km²",gdp:"~$35 billion (approx.)",lifeExpectancy:"~66 years"},
+  Suriname: {flag:"🇸🇷",continent:"South America",capital:"Paramaribo",currency:"Surinamese Dollar",language:"Dutch",population:"~630,000",area:"~163,820 km²",gdp:"~$4 billion (approx.)",lifeExpectancy:"~71 years"},
+  Sweden: {flag:"🇸🇪",continent:"Europe",capital:"Stockholm",currency:"Swedish Krona",language:"Swedish",population:"~10.6 million",area:"~450,295 km²",gdp:"~$610 billion (approx.)",lifeExpectancy:"~83 years"},
+  Switzerland: {flag:"🇨🇭",continent:"Europe",capital:"Bern",currency:"Swiss Franc",language:"German, French, Italian and Romansh",population:"~9 million",area:"~41,285 km²",gdp:"~$900 billion (approx.)",lifeExpectancy:"~84 years"},
+  Syria: {flag:"🇸🇾",continent:"Asia",capital:"Damascus",currency:"Syrian Pound",language:"Arabic",population:"~23 million",area:"~185,180 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~70 years"},
+
+  Taiwan: {flag:"🇹🇼",continent:"Asia",capital:"Taipei",currency:"New Taiwan Dollar",language:"Mandarin Chinese",population:"~23 million",area:"~36,197 km²",gdp:"~$800 billion (approx.)",lifeExpectancy:"~80 years"},
+  Tajikistan: {flag:"🇹🇯",continent:"Asia",capital:"Dushanbe",currency:"Somoni",language:"Tajik",population:"~10 million",area:"~143,100 km²",gdp:"~$13 billion (approx.)",lifeExpectancy:"~72 years"},
+  Tanzania: {flag:"🇹🇿",continent:"Africa",capital:"Dodoma",currency:"Tanzanian Shilling",language:"Swahili and English",population:"~68 million",area:"~945,087 km²",gdp:"~$85 billion (approx.)",lifeExpectancy:"~67 years"},
+  Thailand: {flag:"🇹🇭",continent:"Asia",capital:"Bangkok",currency:"Thai Baht",language:"Thai",population:"~71 million",area:"~513,120 km²",gdp:"~$515 billion (approx.)",lifeExpectancy:"~79 years"},
+  "Timor-Leste": {flag:"🇹🇱",continent:"Asia",capital:"Dili",currency:"US Dollar",language:"Tetum and Portuguese",population:"~1.4 million",area:"~14,874 km²",gdp:"~$2 billion (approx.)",lifeExpectancy:"~69 years"},
+  Togo: {flag:"🇹🇬",continent:"Africa",capital:"Lomé",currency:"West African CFA Franc",language:"French",population:"~9 million",area:"~56,785 km²",gdp:"~$9 billion (approx.)",lifeExpectancy:"~62 years"},
+  Tonga: {flag:"🇹🇴",continent:"Oceania",capital:"Nuku'alofa",currency:"Tongan Paʻanga",language:"Tongan and English",population:"~105,000",area:"~747 km²",gdp:"~$0.5 billion (approx.)",lifeExpectancy:"~71 years"},
+  "Trinidad and Tobago": {flag:"🇹🇹",continent:"North America",capital:"Port of Spain",currency:"Trinidad and Tobago Dollar",language:"English",population:"~1.5 million",area:"~5,128 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~74 years"},
+  Tunisia: {flag:"🇹🇳",continent:"Africa",capital:"Tunis",currency:"Tunisian Dinar",language:"Arabic",population:"~12 million",area:"~163,610 km²",gdp:"~$50 billion (approx.)",lifeExpectancy:"~77 years"},
+  Turkmenistan: {flag:"🇹🇲",continent:"Asia",capital:"Ashgabat",currency:"Turkmenistani Manat",language:"Turkmen",population:"~7 million",area:"~491,210 km²",gdp:"~$50 billion (approx.)",lifeExpectancy:"~69 years"},
+  Tuvalu: {flag:"🇹🇻",continent:"Oceania",capital:"Funafuti",currency:"Australian Dollar",language:"Tuvaluan and English",population:"~11,000",area:"~26 km²",gdp:"~$0.06 billion (approx.)",lifeExpectancy:"~65 years"},
+
+  Uganda: {flag:"🇺🇬",continent:"Africa",capital:"Kampala",currency:"Ugandan Shilling",language:"English and Swahili",population:"~49 million",area:"~241,038 km²",gdp:"~$55 billion (approx.)",lifeExpectancy:"~64 years"},
+  Ukraine: {flag:"🇺🇦",continent:"Europe",capital:"Kyiv",currency:"Ukrainian Hryvnia",language:"Ukrainian",population:"~37 million",area:"~603,628 km²",gdp:"~$180 billion (approx.)",lifeExpectancy:"~73 years"},
+  "United Arab Emirates": {flag:"🇦🇪",continent:"Asia",capital:"Abu Dhabi",currency:"UAE Dirham",language:"Arabic",population:"~10 million",area:"~83,600 km²",gdp:"~$500 billion (approx.)",lifeExpectancy:"~79 years"},
+  Uruguay: {flag:"🇺🇾",continent:"South America",capital:"Montevideo",currency:"Uruguayan Peso",language:"Spanish",population:"~3.5 million",area:"~176,215 km²",gdp:"~$80 billion (approx.)",lifeExpectancy:"~78 years"},
+  Uzbekistan: {flag:"🇺🇿",continent:"Asia",capital:"Tashkent",currency:"Uzbekistani Som",language:"Uzbek",population:"~36 million",area:"~448,978 km²",gdp:"~$90 billion (approx.)",lifeExpectancy:"~72 years"},
+
+  Vanuatu: {flag:"🇻🇺",continent:"Oceania",capital:"Port Vila",currency:"Vanuatu Vatu",language:"Bislama, English and French",population:"~330,000",area:"~12,189 km²",gdp:"~$1 billion (approx.)",lifeExpectancy:"~71 years"},
+  "Vatican City": {flag:"🇻🇦",continent:"Europe",capital:"Vatican City",currency:"Euro",language:"Italian and Latin",population:"~800",area:"~0.49 km²",gdp:"N/A",lifeExpectancy:"N/A"},
+  Venezuela: {flag:"🇻🇪",continent:"South America",capital:"Caracas",currency:"Venezuelan Bolívar",language:"Spanish",population:"~28 million",area:"~916,445 km²",gdp:"~$100 billion (approx.)",lifeExpectancy:"~71 years"},
+
+  Yemen: {flag:"🇾🇪",continent:"Asia",capital:"Sana'a",currency:"Yemeni Rial",language:"Arabic",population:"~34 million",area:"~527,968 km²",gdp:"~$20 billion (approx.)",lifeExpectancy:"~66 years"},
+  Zambia: {flag:"🇿🇲",continent:"Africa",capital:"Lusaka",currency:"Zambian Kwacha",language:"English",population:"~21 million",area:"~752,618 km²",gdp:"~$30 billion (approx.)",lifeExpectancy:"~62 years"},
+  Zimbabwe: {flag:"🇿🇼",continent:"Africa",capital:"Harare",currency:"Zimbabwean Dollar",language:"English, Shona and Ndebele",population:"~16 million",area:"~390,757 km²",gdp:"~$35 billion (approx.)",lifeExpectancy:"~62 years"}
+
+};
+
+const selects=[a,b];
+Object.keys(d).forEach(x=>selects.forEach(s=>s.innerHTML+=`<option>${x}</option>`));
+b.value="Select";
+
+const rows=[
+  ["Continent","continent"],
+  ["Capital","capital"],
+  ["Currency","currency"],
+  ["Primary language(s)","language"],
+  ["Population","population"],
+  ["Area","area"],
+  ["Nominal GDP","gdp"],
+  ["Life expectancy","lifeExpectancy"]
+];
+
+function compare(){
+  let x=d[a.value], y=d[b.value];
+  result.innerHTML=`<div class="table-responsive"><table class="table table-bordered align-middle">
+    <thead><tr><th>Category</th><th>${x.flag} ${a.value}</th><th>${y.flag} ${b.value}</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><th>${r[0]}</th><td>${x[r[1]]}</td><td>${y[r[1]]}</td></tr>`).join("")}</tbody>
+  </table></div>
+  <p class="text-secondary" style="font-size:.85rem">Figures are rounded approximations for general reference.</p>`;
+}
+selects.forEach(s=>s.onchange=compare);
+compare();
+</script></body></html>

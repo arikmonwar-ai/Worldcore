@@ -1,0 +1,325 @@
+/* ============================================================
+   WORLDCORE — "Night Atlas" design system
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap');
+
+:root{
+  --ink-900:#0e1220;
+  --ink-800:#141a2e;
+  --ink-700:#1e2740;
+  --ink-600:#2a3555;
+  --brass:#c9a227;
+  --brass-soft:#e0c05f;
+  --teal:#4e8098;
+  --parchment:#ede8dc;
+  --parchment-dim:#b9b6ab;
+  --sage:#7fa37b;
+  --terracotta:#c06a4f;
+  --rule: rgba(201,162,39,0.28);
+  --radius: 3px;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  background:var(--ink-800);
+  color:var(--parchment);
+  font-family:'Work Sans', sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  background-image:
+    radial-gradient(ellipse at 15% -10%, rgba(78,128,152,0.14), transparent 45%),
+    radial-gradient(ellipse at 100% 0%, rgba(201,162,39,0.08), transparent 40%);
+}
+
+h1,h2,h3,h4{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  color:var(--parchment);
+  letter-spacing:0.2px;
+}
+
+a{ color:var(--brass-soft); text-decoration:none; }
+a:hover{ color:var(--brass); }
+
+p{ color:var(--parchment-dim); }
+.lead{ color:var(--parchment-dim); }
+.text-secondary{ color:var(--parchment-dim) !important; }
+
+/* ---------- Navbar ---------- */
+.navbar{
+  background:var(--ink-900) !important;
+  border-bottom:1px solid var(--rule);
+}
+.navbar-brand{
+  font-family:'Fraunces', serif;
+  font-size:1.35rem;
+  color:var(--parchment) !important;
+}
+.nav-link{
+  color:var(--parchment-dim) !important;
+  font-weight:500;
+}
+.nav-link:hover, .nav-link.active{
+  color:var(--brass-soft) !important;
+}
+.btn-outline-light{
+  border-color:var(--rule);
+  color:var(--parchment);
+}
+.btn-outline-light:hover{
+  background:var(--brass);
+  border-color:var(--brass);
+  color:var(--ink-900);
+}
+
+/* ---------- Buttons ---------- */
+.btn-dark{
+  background:var(--brass);
+  border:1px solid var(--brass);
+  color:var(--ink-900);
+  font-weight:600;
+  border-radius:var(--radius);
+}
+.btn-dark:hover{
+  background:var(--brass-soft);
+  border-color:var(--brass-soft);
+  color:var(--ink-900);
+}
+.btn-light{
+  background:var(--parchment);
+  border:1px solid var(--parchment);
+  color:var(--ink-900);
+  font-weight:600;
+  border-radius:var(--radius);
+}
+.btn-light:hover{ background:var(--brass-soft); border-color:var(--brass-soft); }
+
+/* ---------- Hero (home) ---------- */
+.hero{
+  background:linear-gradient(180deg, var(--ink-900), var(--ink-800) 80%);
+  border-bottom:1px solid var(--rule);
+  padding-top:1rem;
+}
+.hero .display-3{ font-family:'Fraunces', serif; }
+
+/* Bangladesh hero */
+.bd-hero{
+  background:linear-gradient(180deg, var(--ink-900), var(--ink-800) 85%);
+  border-bottom:1px solid var(--rule);
+}
+
+/* ---------- Cards ---------- */
+.feature-card, .info-box, .country-card, .mystery-card, .quiz-card{
+  background:var(--ink-700);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1.75rem;
+  height:100%;
+  transition:border-color .15s ease;
+}
+.feature-card:hover, .country-card:hover{
+  border-color:var(--brass);
+}
+.feature-card span{
+  font-size:2rem;
+  display:block;
+  margin-bottom:.5rem;
+}
+.feature-card h3, .info-box h3{
+  font-size:1.15rem;
+  margin-bottom:.5rem;
+}
+.feature-card a{
+  font-weight:600;
+}
+
+.country-card{ text-align:center; }
+.country-card .flag{ font-size:2.5rem; margin-bottom:.5rem; }
+.country-card h3{ margin-bottom:.35rem; }
+.country-card p{ font-size:.92rem; margin-bottom:1rem; }
+
+/* ---------- Country profile hero ---------- */
+.country-hero{
+  border-bottom:1px solid var(--rule);
+  padding-bottom:2rem;
+  margin-bottom:.5rem;
+  text-align:center;
+}
+
+/* ---------- Forms ---------- */
+.form-control, .form-select{
+  background:var(--ink-700);
+  border:1px solid var(--rule);
+  color:var(--parchment);
+}
+.form-control:focus, .form-select:focus{
+  background:var(--ink-700);
+  color:var(--parchment);
+  border-color:var(--brass);
+  box-shadow:0 0 0 .2rem rgba(201,162,39,0.18);
+}
+.form-control::placeholder{ color:var(--parchment-dim); }
+
+/* ---------- Tables (compare) ---------- */
+.table{
+  color:var(--parchment);
+  border-color:var(--rule);
+}
+.table thead th{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  background:var(--ink-900);
+  color:var(--brass-soft);
+  border-color:var(--rule);
+}
+.table td, .table th{
+  border-color:var(--rule) !important;
+  background:transparent;
+}
+.table-bordered{ border-color:var(--rule); }
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  border-left:2px solid var(--rule);
+  padding-left:2rem;
+  margin-top:2rem;
+}
+.timeline > div{
+  position:relative;
+  padding-bottom:2.25rem;
+}
+.timeline > div::before{
+  content:'';
+  position:absolute;
+  left:-2.42rem;
+  top:.35rem;
+  width:.65rem;
+  height:.65rem;
+  border-radius:50%;
+  background:var(--brass);
+  border:2px solid var(--ink-800);
+}
+.timeline span{
+  display:inline-block;
+  font-size:.85rem;
+  color:var(--teal);
+  font-weight:600;
+  margin-bottom:.15rem;
+}
+.timeline h3{ font-size:1.2rem; margin-bottom:.25rem; }
+
+/* ---------- Quiz ---------- */
+.quiz-card{ max-width:640px; margin:0 auto; }
+.answer{
+  border-color:var(--rule);
+  color:var(--parchment);
+  border-radius:var(--radius);
+}
+.answer:hover{
+  background:var(--ink-600);
+  border-color:var(--brass);
+  color:var(--parchment);
+}
+.answer.border-success{
+  border-color:var(--sage) !important;
+  border-width:2px;
+  color:var(--sage);
+}
+.answer.border-danger{
+  border-color:var(--terracotta) !important;
+  border-width:2px;
+  color:var(--terracotta);
+}
+#score{ color:var(--brass-soft); }
+
+/* ---------- Mystery ---------- */
+.mystery-card{ max-width:640px; margin:0 auto; text-align:center; }
+#answer.correct{ color:var(--sage); }
+#answer.incorrect{ color:var(--terracotta); }
+
+/* ---------- Footer ---------- */
+footer{
+  background:var(--ink-900) !important;
+  border-top:1px solid var(--rule);
+  color:var(--parchment-dim) !important;
+}
+
+/* ---------- Random Discovery ---------- */
+.random-strip{
+  border:1px dashed var(--rule);
+  border-radius:var(--radius);
+  padding:1.25rem 1.5rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin-top:2.5rem;
+}
+.random-strip p{ margin:0; }
+
+/* ---------- Category chips (timeline filter) ---------- */
+.chip{
+  display:inline-block;
+  padding:.35rem .9rem;
+  border:1px solid var(--rule);
+  border-radius:999px;
+  color:var(--parchment-dim);
+  font-size:.85rem;
+  margin:0 .4rem .4rem 0;
+  cursor:pointer;
+  background:transparent;
+}
+.chip.active{
+  background:var(--brass);
+  border-color:var(--brass);
+  color:var(--ink-900);
+  font-weight:600;
+}
+
+/* ---------- Divisions grid (bangladesh) ---------- */
+.division-card{
+  background:var(--ink-700);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1.1rem 1.3rem;
+  height:100%;
+}
+.division-card h4{ font-size:1.05rem; margin-bottom:.35rem; color:var(--brass-soft); }
+.division-card p{ font-size:.9rem; margin:0; }
+
+
+/* ---------- Country map (Leaflet) ---------- */
+.map-section{
+  margin-top:1.5rem;
+  background:var(--ink-700);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:1rem;
+}
+.map-section[hidden]{ display:none; }
+.map-head{ display:flex; flex-wrap:wrap; gap:.75rem; align-items:center; justify-content:space-between; margin-bottom:.75rem; }
+.map-head h3{ margin:0; font-size:1.25rem; }
+.map-actions{ display:flex; gap:.5rem; flex-wrap:wrap; }
+.country-map{
+  height:520px;
+  width:100%;
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  background:var(--ink-900);
+  z-index:0;
+}
+.map-status{ margin:.75rem 0 0; font-size:.95rem; }
+.map-hint{ margin:.5rem 0 0; font-size:.8rem; opacity:.8; }
+.map-section.is-full{
+  position:fixed; inset:0; z-index:2000;
+  margin:0; border-radius:0; display:flex; flex-direction:column;
+}
+.map-section.is-full .country-map{ flex:1; height:auto; }
+body.map-full{ overflow:hidden; }
+.leaflet-popup-content{ color:#222; }
+.leaflet-container p{ color:inherit; }
+@media (max-width:576px){ .country-map{ height:380px; } }

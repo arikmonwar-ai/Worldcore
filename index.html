@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORLDCORE | Interactive Encyclopedia</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* Optional: Adds a gentle visual cursor state reminder when TTS engine is active */
+  body.tts-enabled .feature-card {
+    cursor: help;
+  }
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<div class="container">
+  <a class="navbar-brand fw-bold" href="index.html">🌍 WORLDCORE</a>
+  
+  <!-- NEW: Text-to-Speech Toggle Control inside Nav Bar -->
+  <div class="d-flex align-items-center ms-auto me-3 order-lg-last">
+    <div class="form-check form-switch text-white">
+      <input class="form-check-input" type="checkbox" id="ttsToggle" checked>
+      <label class="form-check-label small fw-bold" for="ttsToggle" id="ttsLabel">🔊 Audio Reader: ON</label>
+    </div>
+  </div>
+
+  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+  <div class="collapse navbar-collapse" id="nav">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="countries.html">Countries</a></li>
+      <li class="nav-item"><a class="nav-link" href="compare.html">Compare</a></li>
+      <li class="nav-item"><a class="nav-link" href="timeline.html">Timeline</a></li>
+      <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
+      <li class="nav-item"><a class="nav-link" href="mystery.html">Mystery Country</a></li>
+      <li class="nav-item"><a class="nav-link" href="bangladesh.html">🇧🇩 Bangladesh</a></li>
+      <li class="nav-item"><a class="nav-link" href="tripplanner.html">Trip Planner</a></li>
+    </ul>
+  </div>
+</div>
+</nav>
+
+<header class="hero text-center text-white">
+<div class="container py-5">
+<div class="display-1 mb-3">🌍</div>
+<h1 class="display-3 fw-bold">WORLDCORE</h1>
+<p class="lead">The Interactive Encyclopedia of Our World</p>
+<p class="mb-4">Explore countries, discover history, compare the world, test your knowledge, and plan tours around the world</p>
+<a href="countries.html" class="btn btn-light btn-lg me-2">Explore the World</a>
+<a href="quiz.html" class="btn btn-outline-light btn-lg">Take a Quiz</a>
+</div></header>
+
+<main class="container py-5">
+<h2 class="text-center mb-4">Explore WORLDCORE</h2>
+<div class="row g-4">
+<div class="col-md-4"><div class="feature-card"><span>🗺️</span><h3>Country Explorer</h3><p>Discover factual information about countries around the world.</p><a href="countries.html">Explore →</a></div></div>
+<div class="col-md-4"><div class="feature-card"><span>📊</span><h3>Country Compare</h3><p>Put two countries side-by-side and explore their differences.</p><a href="compare.html">Compare →</a></div></div>
+<div class="col-md-4"><div class="feature-card"><span>🕰️</span><h3>World Timeline</h3><p>Travel through major events in world history.</p><a href="timeline.html">View Timeline →</a></div></div>
+<div class="col-md-4"><div class="feature-card"><span>🧠</span><h3>World Quiz</h3><p>Challenge yourself with geography, history, science and culture.</p><a href="quiz.html">Start Quiz →</a></div></div>
+<div class="col-md-4"><div class="feature-card"><span>🔎</span><h3>Mystery Country</h3><p>Can you identify a country from a series of clues?</p><a href="mystery.html">Play →</a></div></div>
+<div class="col-md-4"><div class="feature-card"><span>🇧🇩</span><h3>Bangladesh</h3><p>Explore the geography, culture, history and natural heritage of Bangladesh.</p><a href="bangladesh.html">Discover →</a></div></div>
+</div>
+
+<div class="random-strip">
+  <div>
+    <h3 class="mb-1">🎲 Random Discovery</h3>
+    <p>Let WORLDCORE pick a country for you to explore.</p>
+  </div>
+  <a href="#" id="randomLink" class="btn btn-dark">Surprise Me</a>
+</div>
+</main>
+
+<script>
+// --- Existing Randomizer Code ---
+const randomCountries=["Bangladesh","Japan","France","Brazil","India","Canada","Australia","Egypt","United Kingdom","United States","Afghanistan", "Albania","Algeria","Andorra", "Angola","Antigua and Barbuda", "Argentina","Armenia","Austria","Azerbaijan","Bahamas","Bahrain","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia", "Bosnia and Herzegovina","Suriname","Timor-Leste","Vatican City","Venezuela", "Yemen","Oman","Zambia","Zimbabwe","Tuvalu","Saint Lucia","Senegal","Serbia","Spain","Sudan","South Sudan","Timor-Leste","San Marino","Rwanda"];
+document.getElementById("randomLink").onclick=(e)=>{
+  e.preventDefault();
+  const pick=randomCountries[Math.floor(Math.random()*randomCountries.length)];
+  location.href=`country.html?country=${encodeURIComponent(pick)}`;
+};
+
+// --- NEW: Audio Reader / Text-to-Speech Feature ---
+const ttsToggle = document.getElementById('ttsToggle');
+const ttsLabel = document.getElementById('ttsLabel');
+const featureCards = document.querySelectorAll('.feature-card');
+
+// Helper state checking function
+function isTextToSpeechEnabled() {
+  return ttsToggle.checked;
+}
+
+// Update label UI and clean up voice engine if turned off mid-speech
+ttsToggle.addEventListener('change', () => {
+  if (isTextToSpeechEnabled()) {
+    ttsLabel.innerText = "🔊 Audio Reader: ON";
+    document.body.classList.add('tts-enabled');
+  } else {
+    ttsLabel.innerText = "🔇 Audio Reader: OFF";
+    document.body.classList.remove('tts-enabled');
+    window.speechSynthesis.cancel(); // Stop talking instantly
+  }
+});
+
+// Sync tracking initial style helper matching switch setup defaults
+if(isTextToSpeechEnabled()) document.body.classList.add('tts-enabled');
+
+// Map speech actions to all feature cards found inside the document structure
+featureCards.forEach(card => {
+  
+  // 1. Mouse Hover Inbound Event
+  card.addEventListener('mouseenter', () => {
+    if (!isTextToSpeechEnabled()) return; // Abort if user chose "OFF"
+
+    // Stop currently active queues to bypass lagging sound blocks
+    window.speechSynthesis.cancel();
+
+    // Isolate structural plain text values inside current container
+    const textToSpeak = card.innerText;
+
+    // Create a new utterance transaction target instance
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    
+    // Custom clean-up speech filter: strips down raw arrow symbols read as noise
+    utterance.text = textToSpeak.replace('→', ''); 
+
+    // Execute core translation audio playback
+    window.speechSynthesis.speak(utterance);
+  });
+
+  // 2. Mouse Leave Event
+  card.addEventListener('mouseleave', () => {
+    // Shuts the speaker off smoothly immediately as mouse drops boundaries away
+    if (isTextToSpeechEnabled()) {
+      window.speechSynthesis.cancel();
+    }
+  });
+});
+</script>
+
+<footer class="bg-dark text-white text-center p-4">© 2026 WORLDCORE • Explore. Discover. Understand.<a href="about.html">click here to know about WORLDCORE</a></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

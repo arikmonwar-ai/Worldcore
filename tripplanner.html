@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORLDCORE | Trip Planner</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* WORLDCORE dark look: navy background, cream text, serif headings */
+:root{--wc-bg:#0f1424;--wc-bg2:#1a2238;--wc-card:#1b2540;--wc-line:#2d3858;--wc-cream:#efe9dc;--wc-muted:#a9aebd;--wc-gold:#4a4526;}
+html,body{background:var(--wc-bg);}
+body{font-family:'Work Sans',system-ui,sans-serif;color:var(--wc-cream);background:linear-gradient(160deg,var(--wc-bg) 0%,var(--wc-bg2) 100%);background-attachment:fixed;}
+h1,h2,h3,h4,h5,.navbar-brand{font-family:'Lora',Georgia,serif;color:var(--wc-cream);}
+.text-muted,.form-text{color:var(--wc-muted)!important;}
+.navbar{background:var(--wc-bg)!important;border-bottom:1px solid var(--wc-gold);}
+.navbar .nav-link{color:var(--wc-muted);}
+.navbar .nav-link:hover,.navbar .nav-link.active{color:var(--wc-cream);}
+.hero{background:var(--wc-bg);border-bottom:1px solid var(--wc-line);}
+.hero h1{color:var(--wc-cream);}
+.hero .lead,.hero p{color:var(--wc-muted);}
+.btn-light{background:var(--wc-cream);border-color:var(--wc-cream);color:var(--wc-bg);font-weight:600;}
+.btn-light:hover{background:#fff;border-color:#fff;color:var(--wc-bg);}
+.btn-outline-light{color:var(--wc-cream);border-color:var(--wc-line);background:var(--wc-bg);}
+.btn-outline-light:hover{background:var(--wc-card);border-color:var(--wc-cream);color:var(--wc-cream);}
+.feature-card,.planner-card{background:var(--wc-card);border:1px solid var(--wc-line);border-radius:6px;padding:1.5rem;text-align:left;box-shadow:none;}
+.planner-card{height:100%;}
+.form-control,.form-select{background-color:var(--wc-bg);border:1px solid var(--wc-line);color:var(--wc-cream);}
+.form-control:focus,.form-select:focus{background-color:var(--wc-bg);color:var(--wc-cream);border-color:var(--wc-cream);box-shadow:0 0 0 .2rem rgba(239,233,220,.15);}
+.form-control::placeholder{color:#6f7690;}
+.form-check-input{background-color:var(--wc-bg);border-color:var(--wc-muted);}
+.form-check-input:checked{background-color:var(--wc-cream);border-color:var(--wc-cream);}
+.alert-secondary{background:var(--wc-bg);border:1px solid var(--wc-line);color:var(--wc-cream);}
+.day-card{border-left:4px solid var(--wc-cream);background:var(--wc-card);border:1px solid var(--wc-line);border-left:4px solid var(--wc-cream);border-radius:6px;padding:1rem 1.25rem;margin-bottom:1rem;}
+.day-card h5{margin-bottom:.5rem;}
+.day-slot{display:flex;gap:.75rem;padding:.35rem 0;}
+.day-slot .when{min-width:84px;font-weight:600;color:var(--wc-muted);}
+.stat-box{background:var(--wc-card);border:1px solid var(--wc-line);border-radius:6px;padding:1rem;text-align:center;}
+.stat-box .num{font-family:'Lora',serif;font-size:1.4rem;font-weight:700;}
+.budget-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--wc-line);}
+.budget-row:last-child{border-bottom:0;font-weight:700;}
+.pack-item{display:block;padding:.25rem 0;}
+.pack-item input:checked + span{text-decoration:line-through;opacity:.55;}
+.saved-trip{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid var(--wc-line);}
+footer a{color:var(--wc-cream);margin-left:.5rem;}
+
+/* Vibe tags */
+.vibe{display:inline-block;font-size:.78rem;padding:.2rem .6rem;margin:.15rem .25rem .15rem 0;border:1px solid var(--wc-line);border-radius:999px;color:var(--wc-muted);background:var(--wc-bg);user-select:none;}
+button.vibe{font-family:inherit;cursor:pointer;}
+button.vibe:hover{border-color:var(--wc-cream);color:var(--wc-cream);}
+button.vibe:focus-visible{outline:2px solid var(--wc-cream);outline-offset:2px;}
+button.vibe.active{background:var(--wc-cream);color:var(--wc-bg);border-color:var(--wc-cream);font-weight:600;}
+
+/* Advisory badges and banner */
+.badge-adv{display:inline-block;font-size:.78rem;font-weight:600;padding:.2rem .6rem;border-radius:4px;border:1px solid currentColor;}
+.adv-1{color:#8fd19e;}.adv-2{color:#f0d37a;}.adv-3{color:#f2a65a;}.adv-4{color:#f28b82;}
+.adv-box{border:1px solid var(--wc-line);border-left:4px solid currentColor;border-radius:6px;padding:.85rem 1.1rem;margin-bottom:1.25rem;background:var(--wc-card);}
+.adv-box .adv-text{color:var(--wc-muted);}
+.adv-box a,.adv-note a{color:var(--wc-cream);}
+.adv-note{font-size:.8rem;color:var(--wc-muted);}
+
+#result{display:none;}
+@media print{body{background:#fff!important;color:#000!important}.navbar,footer,.hero,#plannerForm,.no-print{display:none!important;}.day-card,.stat-box,.feature-card,.adv-box{background:#fff;color:#000;border-color:#ccc}h1,h2,h3,h4,h5{color:#000}.text-muted,.adv-box .adv-text{color:#555!important}}
+
+/* ---- overlap fixes ---- */
+[id]{scroll-margin-top:90px;}                 /* sticky navbar no longer hides scroll targets */
+.navbar .navbar-nav{flex-wrap:wrap;}
+.planner-card{height:auto;}                   /* stop forced 100% height */
+
+.form-control,.form-select{min-width:0;max-width:100%;}
+input[type=date]{min-width:0;}
+
+.stat-box{height:100%;display:flex;flex-direction:column;justify-content:center;overflow-wrap:anywhere;}
+.stat-box .num{font-size:clamp(1rem,2.2vw,1.4rem);line-height:1.25;}
+
+.day-slot .when{flex:0 0 84px;}
+.day-slot > span:last-child{min-width:0;overflow-wrap:anywhere;}
+
+.saved-trip{flex-wrap:wrap;}
+.saved-trip > span:first-child{min-width:0;overflow-wrap:anywhere;}
+
+.budget-row span:first-child{padding-right:.75rem;}
+.budget-row span:last-child{white-space:nowrap;}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<div class="container"><a class="navbar-brand fw-bold" href="index.html">🌍 WORLDCORE</a>
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+<div class="collapse navbar-collapse" id="nav"><ul class="navbar-nav ms-auto">
+<li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="countries.html">Countries</a></li>
+<li class="nav-item"><a class="nav-link" href="compare.html">Compare</a></li>
+<li class="nav-item"><a class="nav-link" href="timeline.html">Timeline</a></li>
+<li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
+<li class="nav-item"><a class="nav-link" href="mystery.html">Mystery Country</a></li>
+<li class="nav-item"><a class="nav-link active" href="tripplanner.html">Trip Planner</a></li>
+<li class="nav-item"><a class="nav-link" href="bangladesh.html">🇧🇩 Bangladesh</a></li>
+</ul></div></div></nav>
+
+<header class="hero text-center text-white">
+<div class="container py-5">
+<div class="display-1 mb-3">🧳</div>
+<h1 class="display-3 fw-bold">WORLDCORE</h1>
+<h1 class="display-3 fw-bold">Trip Planner</h1>
+<p class="lead">Plan your journey with WORLDCORE</p>
+<p class="mb-4">Pick any of 195 countries and your dates. We detect where you're starting from and build the plan.</p>
+<a href="#plannerForm" class="btn btn-light btn-lg me-2">Start Planning</a>
+<a href="countries.html" class="btn btn-outline-light btn-lg">Browse Countries</a>
+</div></header>
+
+<main class="container py-5">
+
+<!-- FORM -->
+<form id="plannerForm" class="feature-card planner-card mb-5" novalidate>
+<h2 class="h4 mb-3">Plan your trip</h2>
+<div id="originBox" class="alert alert-secondary d-flex flex-wrap justify-content-between align-items-center gap-2">
+<span id="originText">📍 Waiting for your permission…</span>
+<span class="no-print"><button type="button" class="btn btn-sm btn-light" id="retryLoc">📍 Allow location</button></span>
+</div>
+<div id="manualOrigin" class="mb-3" style="display:none">
+<label for="originInput" class="form-label fw-semibold">Where are you travelling from? (optional)</label>
+<input id="originInput" class="form-control" placeholder="e.g. Dhaka, Bangladesh">
+<div class="form-text">Location access was unavailable. Type your city, or leave blank to skip travel-to-destination estimates.</div>
+</div>
+
+<div class="mb-3">
+<span class="form-label fw-semibold d-block">Browse by vibe</span>
+<div id="vibeBar"></div>
+<div class="form-text">Popular destinations are listed first. Every country stays available through search or the A–Z list.</div>
+</div>
+
+<div class="row g-3">
+<div class="col-lg-4">
+<label for="destSearch" class="form-label fw-semibold">Where to?</label>
+<input id="destSearch" class="form-control form-control-sm mb-2" placeholder="🔍 Search by country or capital" autocomplete="off">
+<select id="dest" class="form-select" aria-label="Destination"></select>
+<div id="destInfo" class="mt-2 small"></div>
+</div>
+<div class="col-6 col-lg-3">
+<label for="start" class="form-label fw-semibold">Trip start day</label>
+<input type="date" id="start" class="form-control">
+</div>
+<div class="col-6 col-lg-3">
+<label for="end" class="form-label fw-semibold">Trip end day</label>
+<input type="date" id="end" class="form-control">
+</div>
+<div class="col-12 col-lg-2">
+<label for="travelers" class="form-label fw-semibold">Travelers</label>
+<input type="number" id="travelers" class="form-control" min="1" max="20" value="2">
+</div>
+<div class="col-lg-4">
+<label for="style" class="form-label fw-semibold">Travel style</label>
+<select id="style" class="form-select">
+<option value="budget">Budget – hostels &amp; street food</option>
+<option value="mid" selected>Comfort – 3★ hotels &amp; restaurants</option>
+<option value="luxury">Luxury – 5★ &amp; private transport</option>
+</select>
+</div>
+<div class="col-lg-8">
+<span class="form-label fw-semibold d-block">Interests</span>
+<div class="d-flex flex-wrap gap-3 pt-1" id="interests">
+<label class="form-check-label"><input class="form-check-input me-1" type="checkbox" value="culture" checked>🏛️ Culture</label>
+<label class="form-check-label"><input class="form-check-input me-1" type="checkbox" value="nature" checked>🌿 Nature</label>
+<label class="form-check-label"><input class="form-check-input me-1" type="checkbox" value="food" checked>🍜 Food</label>
+<label class="form-check-label"><input class="form-check-input me-1" type="checkbox" value="adventure">🧗 Adventure</label>
+<label class="form-check-label"><input class="form-check-input me-1" type="checkbox" value="city">🏙️ City life</label>
+</div>
+</div>
+</div>
+<div id="formError" class="text-danger mt-3" role="alert"></div>
+<button type="submit" class="btn btn-light btn-lg mt-3">Build my itinerary</button>
+</form>
+
+<!-- RESULT -->
+<section id="result">
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+<h2 class="h3 mb-0" id="resultTitle"></h2>
+<div class="no-print">
+<button class="btn btn-outline-light me-2" id="saveBtn">💾 Save trip</button>
+<button class="btn btn-outline-light" onclick="window.print()">🖨️ Print</button>
+</div>
+</div>
+
+<div id="advisory"></div>
+
+<div class="row g-3 mb-4" id="stats"></div>
+
+<div class="row g-4">
+<div class="col-lg-7">
+<h3 class="h5 mb-3">Day-by-day itinerary</h3>
+<div id="itinerary"></div>
+</div>
+<div class="col-lg-5">
+<div class="feature-card planner-card mb-4">
+<h3 class="h5">Estimated budget</h3>
+<p class="text-muted small">Per-person daily rates for the chosen style, multiplied by days and travelers. Round-trip travel is estimated from your detected starting point.</p>
+<div id="budget"></div>
+</div>
+<div class="feature-card planner-card mb-4">
+<h3 class="h5">Good to know</h3>
+<ul id="tips" class="mb-0 ps-3"></ul>
+</div>
+<div class="feature-card planner-card">
+<h3 class="h5">Packing checklist</h3>
+<div id="packing"></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SAVED -->
+<section class="mt-5 no-print">
+<div class="feature-card planner-card">
+<h3 class="h5">Saved trips</h3>
+<div id="saved"><p class="text-muted mb-0">No saved trips yet. Build an itinerary and press “Save trip”.</p></div>
+</div>
+</section>
+</main>
+
+<footer class="text-center p-4" style="background:var(--wc-bg);border-top:1px solid var(--wc-line);color:var(--wc-muted)">© 2026 WORLDCORE • Explore. Discover. Understand.<a href="about.html">click here to know about WORLDCORE</a></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* Daily cost per person in USD: [budget, mid, luxury] split as stay, food, transport, activities */
+const DETAIL = {  // hand-written itineraries for these countries
+ "Bangladesh":{flag:"🇧🇩",cur:"BDT",best:"Nov–Feb",cost:{budget:[10,6,4,4],mid:[35,12,8,10],luxury:[120,35,25,30]},
+  acts:{culture:["Old Dhaka walk: Lalbagh Fort and Ahsan Manzil","Sixty Dome Mosque, Bagerhat","Paharpur Buddhist Vihara","Kantajew Temple, Dinajpur"],nature:["Sundarbans mangrove boat trip","Srimangal tea gardens and Lawachara forest","Cox's Bazar sunset beach walk","Ratargul swamp forest by boat"],food:["Kacchi biryani and borhani in Old Dhaka","Chotpoti and fuchka street tour","Hilsa fish lunch","Seven-layer tea in Srimangal"],adventure:["Trek in Bandarban hills","Surf or kayak at Saint Martin's Island","Cycle through Sylhet haor wetlands"],city:["Dhaka: National Parliament House and museums","Rickshaw art tour of Dhaka","Shopping at Aarong and New Market"]},
+  tips:["Carry cash (BDT); cards work mainly in larger hotels.","Dress modestly at religious sites.","Rickshaws and ride-hailing apps are cheap; agree fares first."],
+  pack:["Light cotton clothing","Rain jacket (monsoon Jun–Sep)","Insect repellent","Modest cover-up for mosques"]},
+ "Japan":{flag:"🇯🇵",cur:"JPY",best:"Mar–May, Oct–Nov",cost:{budget:[30,22,15,12],mid:[90,45,30,30],luxury:[300,120,60,90]},
+  acts:{culture:["Fushimi Inari and Kiyomizu-dera, Kyoto","Senso-ji and Meiji Shrine, Tokyo","Nara deer park and Todai-ji","Hiroshima Peace Memorial"],nature:["Arashiyama bamboo grove","Mount Fuji viewpoint at Kawaguchiko","Nikko national park walk"],food:["Tsukiji outer market breakfast","Ramen crawl in Shinjuku","Osaka Dotonbori street food","Kaiseki dinner"],adventure:["Hike the Nakasendo trail","Ski or snowboard in Hakuba (winter)","Climb Mount Fuji (Jul–Sep)"],city:["Shibuya crossing and Harajuku","Akihabara and teamLab","Osaka Castle and Umeda Sky Building"]},
+  tips:["Get a Suica/IC card for trains.","Cash is still common at small shops.","Tipping is not expected."],
+  pack:["Comfortable walking shoes","Pocket Wi-Fi or eSIM","Slip-on shoes (easy to remove)","Small towel"]},
+ "France":{flag:"🇫🇷",cur:"EUR",best:"Apr–Jun, Sep–Oct",cost:{budget:[40,25,12,15],mid:[110,55,25,40],luxury:[350,140,70,120]},
+  acts:{culture:["Louvre and Musée d'Orsay","Palace of Versailles","Mont-Saint-Michel","Roman sites in Arles and Nîmes"],nature:["Lavender fields of Provence","Gorges du Verdon","Loire Valley by bike"],food:["Boulangerie and market morning","Wine tasting in Burgundy","Lyon bouchon dinner"],adventure:["Chamonix cable car and glacier","Canoe the Dordogne","Cycle the Tour de France climbs"],city:["Eiffel Tower and Seine cruise","Montmartre and Sacré-Cœur","Nice promenade and old town"]},
+  tips:["Many shops close Sunday afternoon.","Book major museums online.","Greet with “Bonjour” first."],
+  pack:["Layers for changing weather","Reusable shopping bag","Plug adapter type E","Smart-casual outfit"]},
+ "Brazil":{flag:"🇧🇷",cur:"BRL",best:"May–Sep",cost:{budget:[25,18,10,10],mid:[75,35,20,28],luxury:[250,100,60,90]},
+  acts:{culture:["Pelourinho, Salvador","Historic Paraty","Cristo Redentor, Rio"],nature:["Iguaçu Falls","Amazon lodge excursion","Lençóis Maranhenses dunes"],food:["Feijoada lunch","Acarajé on the street in Salvador","Churrascaria dinner"],adventure:["Hang-gliding over Rio","Snorkel in Bonito","Jungle trek near Manaus"],city:["Copacabana and Ipanema","São Paulo murals and Mercado Municipal","Sugarloaf at sunset"]},
+  tips:["Use ride-hailing apps in big cities.","Keep valuables out of sight.","Carry some Portuguese phrases."],
+  pack:["Sunscreen and hat","Light rain poncho","Swimwear","Reusable water bottle"]},
+ "Egypt":{flag:"🇪🇬",cur:"EGP",best:"Oct–Apr",cost:{budget:[18,14,8,10],mid:[60,28,15,25],luxury:[220,80,50,80]},
+  acts:{culture:["Pyramids of Giza and Sphinx","Egyptian Museum, Cairo","Karnak and Luxor temples","Abu Simbel"],nature:["Nile felucca sail at sunset","White Desert camping","Ras Mohammed reef"],food:["Koshari lunch in Cairo","Khan el-Khalili café stop","Fresh sugarcane juice tour"],adventure:["Dive the Red Sea at Dahab","Hot-air balloon over Luxor","Desert jeep safari"],city:["Islamic Cairo walk","Alexandria corniche and library","Zamalek riverside"]},
+  tips:["Bargaining is normal in bazaars.","Carry small notes for tips.","Drink bottled water."],
+  pack:["Sun hat and sunglasses","Scarf for sites and sun","Modest clothing","Sturdy sandals"]},
+ "India":{flag:"🇮🇳",cur:"INR",best:"Oct–Mar",cost:{budget:[14,9,6,6],mid:[50,20,12,18],luxury:[200,60,40,70]},
+  acts:{culture:["Taj Mahal at sunrise","Amber Fort, Jaipur","Varanasi ghats and evening aarti","Hampi ruins"],nature:["Kerala backwaters houseboat","Ranthambore tiger reserve","Himalayan foothills in Rishikesh"],food:["Old Delhi food walk","South Indian thali","Mumbai vada pav and chai"],adventure:["White-water rafting in Rishikesh","Trek in Ladakh","Camel safari in Jaisalmer"],city:["Mumbai Gateway and Marine Drive","Delhi: Humayun's Tomb and India Gate","Bengaluru cafés and breweries"]},
+  tips:["Use prepaid taxis or ride apps.","Eat freshly cooked food.","Book trains early."],
+  pack:["Light layers","Hand sanitizer","Power bank","Comfortable sandals"]},
+ "Canada":{flag:"🇨🇦",cur:"CAD",best:"Jun–Sep",cost:{budget:[45,28,15,15],mid:[120,55,35,45],luxury:[350,130,90,130]},
+  acts:{culture:["Old Québec City","Royal Ontario Museum, Toronto","Indigenous heritage centre visit"],nature:["Banff and Lake Louise","Cabot Trail drive","Whale-watching in Tofino"],food:["Poutine and Montreal bagels","Pacific seafood in Vancouver","Maple farm brunch"],adventure:["Canoe in Algonquin","Heli-hiking in the Rockies","Ski at Whistler (winter)"],city:["CN Tower and Toronto islands","Granville Island, Vancouver","Montréal Plateau"]},
+  tips:["Distances are huge; plan transport.","Tipping 15–20% is standard.","Check bear safety rules."],
+  pack:["Warm layers","Waterproof jacket","Bug spray","Hiking boots"]},
+ "Australia":{flag:"🇦🇺",cur:"AUD",best:"Sep–Nov, Mar–May",cost:{budget:[40,28,15,15],mid:[120,55,35,45],luxury:[380,130,90,130]},
+  acts:{culture:["Sydney Opera House tour","Uluru sunrise and cultural centre","Melbourne laneways and galleries"],nature:["Great Barrier Reef snorkel","Blue Mountains walk","Great Ocean Road"],food:["Queen Victoria Market","Barossa Valley wine","Seafood at Sydney Fish Market"],adventure:["Surf lesson at Bondi","Dive with turtles in Ningaloo","Climb Sydney Harbour Bridge"],city:["Bondi to Coogee coastal walk","Melbourne coffee crawl","Brisbane South Bank"]},
+  tips:["Wear sun protection year-round.","Swim between the flags.","Allow for long drives."],
+  pack:["Sunscreen SPF 50","Rash vest","Hat","Reusable bottle"]}
+};
+
+
+/* ===== All 195 countries: 193 UN members + Vatican City + Palestine =====
+   name|ISO code|capital|lat|lng|currency|cost tier 1(cheap)-5(expensive)|climate T,D,M,S,C */
+const ROWS=`Afghanistan|AF|Kabul|34.53|69.17|AFN|1|M
+Albania|AL|Tirana|41.33|19.82|ALL|2|M
+Algeria|DZ|Algiers|36.75|3.06|DZD|2|D
+Andorra|AD|Andorra la Vella|42.51|1.52|EUR|4|M
+Angola|AO|Luanda|-8.84|13.23|AOA|3|T
+Antigua and Barbuda|AG|St. John's|17.12|-61.85|XCD|4|T
+Argentina|AR|Buenos Aires|-34.60|-58.38|ARS|3|S
+Armenia|AM|Yerevan|40.18|44.51|AMD|2|M
+Australia|AU|Canberra|-35.28|149.13|AUD|4|S
+Austria|AT|Vienna|48.21|16.37|EUR|4|M
+Azerbaijan|AZ|Baku|40.41|49.87|AZN|2|M
+Bahamas|BS|Nassau|25.05|-77.36|BSD|5|T
+Bahrain|BH|Manama|26.23|50.59|BHD|4|D
+Bangladesh|BD|Dhaka|23.81|90.41|BDT|1|T
+Barbados|BB|Bridgetown|13.10|-59.61|BBD|4|T
+Belarus|BY|Minsk|53.90|27.57|BYN|2|C
+Belgium|BE|Brussels|50.85|4.35|EUR|4|M
+Belize|BZ|Belmopan|17.25|-88.77|BZD|3|T
+Benin|BJ|Porto-Novo|6.50|2.63|XOF|1|T
+Bhutan|BT|Thimphu|27.47|89.64|BTN|3|M
+Bolivia|BO|La Paz|-16.50|-68.15|BOB|2|S
+Bosnia and Herzegovina|BA|Sarajevo|43.86|18.41|BAM|2|M
+Botswana|BW|Gaborone|-24.65|25.91|BWP|3|S
+Brazil|BR|Brasília|-15.79|-47.88|BRL|3|T
+Brunei|BN|Bandar Seri Begawan|4.89|114.94|BND|3|T
+Bulgaria|BG|Sofia|42.70|23.32|BGN|2|M
+Burkina Faso|BF|Ouagadougou|12.37|-1.52|XOF|1|T
+Burundi|BI|Gitega|-3.43|29.92|BIF|1|T
+Cabo Verde|CV|Praia|14.93|-23.51|CVE|3|T
+Cambodia|KH|Phnom Penh|11.56|104.92|KHR|1|T
+Cameroon|CM|Yaoundé|3.85|11.50|XAF|2|T
+Canada|CA|Ottawa|45.42|-75.70|CAD|4|M
+Central African Republic|CF|Bangui|4.36|18.56|XAF|1|T
+Chad|TD|N'Djamena|12.13|15.06|XAF|2|D
+Chile|CL|Santiago|-33.45|-70.67|CLP|3|S
+China|CN|Beijing|39.90|116.41|CNY|3|M
+Colombia|CO|Bogotá|4.71|-74.07|COP|2|T
+Comoros|KM|Moroni|-11.70|43.26|KMF|2|T
+Congo (Republic)|CG|Brazzaville|-4.27|15.28|XAF|2|T
+Costa Rica|CR|San José|9.93|-84.08|CRC|4|T
+Côte d'Ivoire|CI|Yamoussoukro|6.83|-5.29|XOF|2|T
+Croatia|HR|Zagreb|45.81|15.98|EUR|3|M
+Cuba|CU|Havana|23.11|-82.37|CUP|3|T
+Cyprus|CY|Nicosia|35.19|33.38|EUR|4|M
+Czechia|CZ|Prague|50.08|14.44|CZK|3|M
+Democratic Republic of the Congo|CD|Kinshasa|-4.44|15.27|CDF|2|T
+Denmark|DK|Copenhagen|55.68|12.57|DKK|5|M
+Djibouti|DJ|Djibouti|11.59|43.15|DJF|3|D
+Dominica|DM|Roseau|15.30|-61.39|XCD|4|T
+Dominican Republic|DO|Santo Domingo|18.49|-69.93|DOP|3|T
+Ecuador|EC|Quito|-0.18|-78.47|USD|2|T
+Egypt|EG|Cairo|30.04|31.24|EGP|2|D
+El Salvador|SV|San Salvador|13.69|-89.22|USD|2|T
+Equatorial Guinea|GQ|Malabo|3.75|8.78|XAF|3|T
+Eritrea|ER|Asmara|15.34|38.93|ERN|2|D
+Estonia|EE|Tallinn|59.44|24.75|EUR|3|C
+Eswatini|SZ|Mbabane|-26.31|31.14|SZL|2|S
+Ethiopia|ET|Addis Ababa|9.03|38.74|ETB|2|T
+Fiji|FJ|Suva|-18.14|178.44|FJD|4|T
+Finland|FI|Helsinki|60.17|24.94|EUR|5|C
+France|FR|Paris|48.86|2.35|EUR|4|M
+Gabon|GA|Libreville|0.39|9.45|XAF|3|T
+Gambia|GM|Banjul|13.45|-16.58|GMD|2|T
+Georgia|GE|Tbilisi|41.72|44.79|GEL|2|M
+Germany|DE|Berlin|52.52|13.40|EUR|4|M
+Ghana|GH|Accra|5.60|-0.19|GHS|2|T
+Greece|GR|Athens|37.98|23.73|EUR|3|M
+Grenada|GD|St. George's|12.06|-61.75|XCD|4|T
+Guatemala|GT|Guatemala City|14.63|-90.51|GTQ|2|T
+Guinea|GN|Conakry|9.64|-13.58|GNF|2|T
+Guinea-Bissau|GW|Bissau|11.86|-15.60|XOF|1|T
+Guyana|GY|Georgetown|6.80|-58.16|GYD|3|T
+Haiti|HT|Port-au-Prince|18.54|-72.34|HTG|2|T
+Honduras|HN|Tegucigalpa|14.07|-87.19|HNL|2|T
+Hungary|HU|Budapest|47.50|19.04|HUF|3|M
+Iceland|IS|Reykjavík|64.15|-21.94|ISK|5|C
+India|IN|New Delhi|28.61|77.21|INR|2|D
+Indonesia|ID|Jakarta|-6.21|106.85|IDR|2|T
+Iran|IR|Tehran|35.69|51.39|IRR|1|M
+Iraq|IQ|Baghdad|33.31|44.37|IQD|2|D
+Ireland|IE|Dublin|53.35|-6.26|EUR|4|M
+Israel|IL|Jerusalem|31.77|35.21|ILS|4|M
+Italy|IT|Rome|41.90|12.50|EUR|4|M
+Jamaica|JM|Kingston|17.98|-76.79|JMD|3|T
+Japan|JP|Tokyo|35.68|139.69|JPY|4|M
+Jordan|JO|Amman|31.95|35.93|JOD|3|D
+Kazakhstan|KZ|Astana|51.17|71.43|KZT|2|C
+Kenya|KE|Nairobi|-1.29|36.82|KES|3|T
+Kiribati|KI|Tarawa|1.45|173.00|AUD|3|T
+Kuwait|KW|Kuwait City|29.38|47.99|KWD|4|D
+Kyrgyzstan|KG|Bishkek|42.87|74.59|KGS|1|M
+Laos|LA|Vientiane|17.97|102.63|LAK|1|T
+Latvia|LV|Riga|56.95|24.11|EUR|3|C
+Lebanon|LB|Beirut|33.89|35.50|LBP|3|M
+Lesotho|LS|Maseru|-29.31|27.48|LSL|2|S
+Liberia|LR|Monrovia|6.30|-10.80|LRD|2|T
+Libya|LY|Tripoli|32.89|13.19|LYD|2|D
+Liechtenstein|LI|Vaduz|47.14|9.52|CHF|5|M
+Lithuania|LT|Vilnius|54.69|25.28|EUR|3|C
+Luxembourg|LU|Luxembourg City|49.61|6.13|EUR|5|M
+Madagascar|MG|Antananarivo|-18.88|47.51|MGA|2|T
+Malawi|MW|Lilongwe|-13.96|33.77|MWK|1|T
+Malaysia|MY|Kuala Lumpur|3.14|101.69|MYR|2|T
+Maldives|MV|Malé|4.18|73.51|MVR|5|T
+Mali|ML|Bamako|12.64|-8.00|XOF|1|T
+Malta|MT|Valletta|35.90|14.51|EUR|4|M
+Marshall Islands|MH|Majuro|7.09|171.38|USD|4|T
+Mauritania|MR|Nouakchott|18.09|-15.98|MRU|2|D
+Mauritius|MU|Port Louis|-20.16|57.50|MUR|4|T
+Mexico|MX|Mexico City|19.43|-99.13|MXN|3|T
+Micronesia|FM|Palikir|6.92|158.16|USD|4|T
+Moldova|MD|Chișinău|47.01|28.86|MDL|2|M
+Monaco|MC|Monaco|43.74|7.42|EUR|5|M
+Mongolia|MN|Ulaanbaatar|47.89|106.91|MNT|2|C
+Montenegro|ME|Podgorica|42.44|19.26|EUR|3|M
+Morocco|MA|Rabat|34.02|-6.84|MAD|2|M
+Mozambique|MZ|Maputo|-25.97|32.57|MZN|2|T
+Myanmar|MM|Naypyidaw|19.76|96.08|MMK|1|T
+Namibia|NA|Windhoek|-22.56|17.08|NAD|3|S
+Nauru|NR|Yaren|-0.55|166.92|AUD|4|T
+Nepal|NP|Kathmandu|27.72|85.32|NPR|1|M
+Netherlands|NL|Amsterdam|52.37|4.90|EUR|4|M
+New Zealand|NZ|Wellington|-41.29|174.78|NZD|4|S
+Nicaragua|NI|Managua|12.11|-86.24|NIO|2|T
+Niger|NE|Niamey|13.51|2.11|XOF|1|D
+Nigeria|NG|Abuja|9.08|7.40|NGN|2|T
+North Korea|KP|Pyongyang|39.04|125.76|KPW|3|M
+North Macedonia|MK|Skopje|41.99|21.43|MKD|2|M
+Norway|NO|Oslo|59.91|10.75|NOK|5|C
+Oman|OM|Muscat|23.59|58.41|OMR|4|D
+Pakistan|PK|Islamabad|33.68|73.05|PKR|1|D
+Palau|PW|Ngerulmud|7.50|134.62|USD|5|T
+Palestine|PS|Ramallah|31.90|35.20|ILS|3|M
+Panama|PA|Panama City|8.98|-79.52|PAB|3|T
+Papua New Guinea|PG|Port Moresby|-9.44|147.18|PGK|4|T
+Paraguay|PY|Asunción|-25.26|-57.58|PYG|2|S
+Peru|PE|Lima|-12.05|-77.04|PEN|2|T
+Philippines|PH|Manila|14.60|120.98|PHP|2|T
+Poland|PL|Warsaw|52.23|21.01|PLN|3|M
+Portugal|PT|Lisbon|38.72|-9.14|EUR|3|M
+Qatar|QA|Doha|25.29|51.53|QAR|4|D
+Romania|RO|Bucharest|44.43|26.10|RON|2|M
+Russia|RU|Moscow|55.76|37.62|RUB|3|C
+Rwanda|RW|Kigali|-1.95|30.06|RWF|2|T
+Saint Kitts and Nevis|KN|Basseterre|17.30|-62.73|XCD|4|T
+Saint Lucia|LC|Castries|14.01|-60.99|XCD|4|T
+Saint Vincent and the Grenadines|VC|Kingstown|13.16|-61.22|XCD|4|T
+Samoa|WS|Apia|-13.83|-171.76|WST|4|T
+San Marino|SM|San Marino|43.94|12.45|EUR|4|M
+São Tomé and Príncipe|ST|São Tomé|0.34|6.73|STN|3|T
+Saudi Arabia|SA|Riyadh|24.71|46.68|SAR|3|D
+Senegal|SN|Dakar|14.72|-17.47|XOF|2|T
+Serbia|RS|Belgrade|44.79|20.45|RSD|2|M
+Seychelles|SC|Victoria|-4.62|55.45|SCR|5|T
+Sierra Leone|SL|Freetown|8.48|-13.23|SLE|2|T
+Singapore|SG|Singapore|1.35|103.82|SGD|5|T
+Slovakia|SK|Bratislava|48.15|17.11|EUR|3|M
+Slovenia|SI|Ljubljana|46.06|14.51|EUR|3|M
+Solomon Islands|SB|Honiara|-9.43|159.95|SBD|4|T
+Somalia|SO|Mogadishu|2.05|45.32|SOS|2|D
+South Africa|ZA|Pretoria|-25.75|28.19|ZAR|3|S
+South Korea|KR|Seoul|37.57|126.98|KRW|3|M
+South Sudan|SS|Juba|4.85|31.58|SSP|3|T
+Spain|ES|Madrid|40.42|-3.70|EUR|3|M
+Sri Lanka|LK|Colombo|6.93|79.86|LKR|2|T
+Sudan|SD|Khartoum|15.50|32.56|SDG|2|D
+Suriname|SR|Paramaribo|5.85|-55.20|SRD|3|T
+Sweden|SE|Stockholm|59.33|18.07|SEK|4|C
+Switzerland|CH|Bern|46.95|7.45|CHF|5|M
+Syria|SY|Damascus|33.51|36.29|SYP|2|D
+Tajikistan|TJ|Dushanbe|38.56|68.77|TJS|1|M
+Tanzania|TZ|Dodoma|-6.16|35.75|TZS|3|T
+Thailand|TH|Bangkok|13.76|100.50|THB|2|T
+Timor-Leste|TL|Dili|-8.56|125.57|USD|3|T
+Togo|TG|Lomé|6.13|1.22|XOF|2|T
+Tonga|TO|Nukuʻalofa|-21.14|-175.20|TOP|3|T
+Trinidad and Tobago|TT|Port of Spain|10.66|-61.51|TTD|4|T
+Tunisia|TN|Tunis|36.81|10.18|TND|2|M
+Türkiye|TR|Ankara|39.93|32.86|TRY|2|M
+Turkmenistan|TM|Ashgabat|37.96|58.33|TMT|3|D
+Tuvalu|TV|Funafuti|-8.52|179.20|AUD|4|T
+Uganda|UG|Kampala|0.35|32.58|UGX|2|T
+Ukraine|UA|Kyiv|50.45|30.52|UAH|2|M
+United Arab Emirates|AE|Abu Dhabi|24.45|54.38|AED|4|D
+United Kingdom|GB|London|51.51|-0.13|GBP|5|M
+United States|US|Washington, D.C.|38.91|-77.04|USD|5|M
+Uruguay|UY|Montevideo|-34.90|-56.16|UYU|4|S
+Uzbekistan|UZ|Tashkent|41.30|69.24|UZS|1|M
+Vanuatu|VU|Port Vila|-17.73|168.32|VUV|4|T
+Vatican City|VA|Vatican City|41.90|12.45|EUR|4|M
+Venezuela|VE|Caracas|10.48|-66.90|VES|3|T
+Vietnam|VN|Hanoi|21.03|105.85|VND|2|T
+Yemen|YE|Sana'a|15.37|44.19|YER|2|D
+Zambia|ZM|Lusaka|-15.39|28.28|ZMW|2|T
+Zimbabwe|ZW|Harare|-17.83|31.05|USD|3|T`;
+const TIER={
+ 1:{budget:[10,6,4,4],mid:[30,12,8,10],luxury:[110,30,25,30]},
+ 2:{budget:[18,10,6,8],mid:[50,20,12,18],luxury:[180,55,35,60]},
+ 3:{budget:[28,18,10,12],mid:[80,35,20,28],luxury:[260,100,55,90]},
+ 4:{budget:[40,25,13,15],mid:[115,52,25,40],luxury:[360,135,70,120]},
+ 5:{budget:[60,35,18,20],mid:[170,75,38,55],luxury:[500,190,100,160]}};
+const ZONE={
+ T:{best:"Dry season (varies by region)",pack:["Light breathable clothing","Insect repellent and sunscreen","Light rain jacket","Reusable water bottle"]},
+ D:{best:"Nov–Mar (cooler months)",pack:["Sun hat and sunglasses","Light long-sleeve layers","Sunscreen","Modest clothing for local customs"]},
+ M:{best:"Apr–Jun, Sep–Oct",pack:["Layers for changing weather","Comfortable walking shoes","Light rain jacket","Plug adapter"]},
+ S:{best:"Sep–Nov, Mar–May",pack:["Layers for changing weather","Comfortable walking shoes","Sunscreen and hat","Plug adapter"]},
+ C:{best:"Jun–Aug (or winter for snow sports)",pack:["Warm layers and thermal wear","Waterproof jacket","Gloves and hat","Sturdy boots"]}};
+const flagOf=cc=>String.fromCodePoint(...[...cc].map(c=>127397+c.charCodeAt(0)));
+function genericActs(n,cap){return{
+ culture:[`Explore ${cap}'s historic centre and main museums`,`Take a guided walking tour of ${cap}'s landmarks`,`Visit a heritage site or old town near ${cap}`,`Browse a traditional market and craft workshop`],
+ nature:[`Day trip from ${cap} to a national park or nature reserve`,`Scenic viewpoint, lake or coastline excursion`,`Guided nature walk with a local guide`],
+ food:[`Local food tour in ${cap}`,`Try the national dishes at a family-run restaurant`,`Visit a street-food market or bakery`],
+ adventure:[`Hiking, cycling or a water sport with a local operator`,`Full-day guided outdoor adventure`,`Boat trip or scenic drive`],
+ city:[`Neighbourhood stroll, cafés and shopping in ${cap}`,`Skyline or sunset viewpoint`,`Evening live music or entertainment in ${cap}`]};}
+const DEST={},COORD={};
+ROWS.trim().split("\n").forEach(l=>{
+ const [name,cc,cap,lat,lng,cur,tier,z]=l.split("|");
+ const Z=ZONE[z];
+ const g={flag:flagOf(cc),cc,cap,cur,best:Z.best,cost:TIER[tier],acts:genericActs(name,cap),
+  tips:["Check visa and entry rules for your passport before booking.","Carry some local currency and a backup card.","Check your government's travel advisory before you go.","Activity ideas here are general; check local guides for current details."],
+  pack:Z.pack,generic:true};
+ DEST[name]=DETAIL[name]?Object.assign(g,DETAIL[name],{generic:false}):g;
+ COORD[name]=[+lat,+lng];
+});
+
+/* ===== Curation: popularity order, vibe tags, advisory levels ===== */
+// Shown first under "★ Popular". Everything else stays available under "All countries A–Z" and search.
+const TOP=["Japan","France","Italy","Spain","Thailand","United States","United Kingdom","Türkiye","Greece","Mexico","Australia","Portugal","Indonesia","Vietnam","Egypt","India","Canada","Brazil","Switzerland","Bangladesh"];
+
+const VIBES_LABEL={family:"👨‍👩‍👧 Family-friendly",beach:"🏖️ Beach getaway",budget:"💸 Budget",adventure:"🧗 Extreme adventure",solo:"🧍 Solo-safe",culture:"🏛️ Culture",food:"🍜 Foodie",nature:"🌿 Nature"};
+const VIBES={
+ "Japan":["solo","food","culture","family"],"France":["culture","food","family"],"Italy":["culture","food","beach","family"],
+ "Spain":["beach","food","culture","family"],"Thailand":["beach","budget","food","solo"],"Greece":["beach","culture","family"],
+ "Portugal":["beach","solo","food","budget"],"Indonesia":["beach","nature","adventure","budget"],"Vietnam":["budget","food","nature","solo"],
+ "Mexico":["beach","food","culture"],"Australia":["beach","nature","adventure","family"],"Canada":["nature","family","adventure","solo"],
+ "New Zealand":["adventure","nature","solo","family"],"Switzerland":["nature","solo","family","adventure"],"Iceland":["nature","adventure","solo"],
+ "Egypt":["culture","budget","adventure"],"India":["culture","food","budget","adventure"],"Bangladesh":["budget","nature","food","culture"],
+ "Nepal":["adventure","budget","nature"],"Sri Lanka":["beach","nature","budget","culture"],"Maldives":["beach","family"],
+ "Brazil":["beach","nature","adventure"],"Peru":["adventure","culture","food","budget"],"Tanzania":["nature","adventure"],"Kenya":["nature","adventure"],
+ "South Korea":["solo","food","culture"],"Singapore":["solo","family","food"],"Malaysia":["food","budget","nature","solo"],
+ "Norway":["nature","adventure","solo"],"Türkiye":["culture","food","beach","budget"],"Morocco":["culture","food","adventure"],
+ "United States":["adventure","nature","family"],"United Kingdom":["culture","solo","family"],"Croatia":["beach","culture","solo"],
+ "Costa Rica":["nature","adventure","beach","family"],"Philippines":["beach","adventure","budget"],"Jordan":["culture","adventure"],
+ "Georgia":["budget","food","nature","solo"],"Mauritius":["beach","family"],"Seychelles":["beach","nature"],"Fiji":["beach","family"],
+ "Germany":["culture","solo","family"],"Austria":["culture","nature","solo"],"Ireland":["culture","nature","solo"],"Netherlands":["culture","solo","family"],
+ "Cambodia":["budget","culture","adventure"],"Laos":["budget","nature","adventure"],"Bhutan":["nature","culture"],"Namibia":["nature","adventure"]
+};
+function vibesOf(n){
+ if(VIBES[n])return VIBES[n];
+ const t=[];
+ if(DEST[n].cost.mid[0]<=35)t.push("budget"); // auto-tag cheap destinations
+ t.push("culture");
+ return t; // add a VIBES entry above to curate a country by hand
+}
+
+/* Advisory levels (informational, static snapshot): 1 normal · 2 exercise caution · 3 reconsider travel · 4 do not travel / active conflict.
+   These change often. Always confirm with official sources; the banner links to them. */
+const ADV={
+ 4:["Afghanistan","Syria","Yemen","Somalia","South Sudan","Sudan","Libya","Haiti","Mali","Burkina Faso","Niger","Central African Republic","Ukraine","Iraq","Myanmar","North Korea","Russia","Iran","Belarus"],
+ 3:["Israel","Palestine","Lebanon","Venezuela","Nigeria","Chad","Eritrea","Mozambique","Cameroon","Democratic Republic of the Congo","Pakistan","Burundi","Ethiopia","Mauritania","Guinea-Bissau"],
+ 2:["Egypt","India","Bangladesh","Mexico","Colombia","Brazil","Türkiye","France","United Kingdom","Kenya","Philippines","Jamaica","Honduras","Guatemala","Papua New Guinea","Algeria","Tunisia","Turkmenistan","Cuba","Bahamas"]
+};
+const ADV_LABEL={1:"✅ Normal precautions",2:"⚠️ Exercise increased caution",3:"🟠 Reconsider travel",4:"⛔ Do not travel / active conflict"};
+const ADV_TEXT={
+ 2:"Some areas or situations carry elevated risk. Stay alert, register with your embassy if offered, and check local conditions.",
+ 3:"Serious risks may apply in parts of this country. Reconsider whether to go, avoid higher-risk regions, and get insurance that covers the destination.",
+ 4:"Active conflict, severe instability or travel restrictions may apply. Most governments advise against travel. This itinerary is for planning reference only."
+};
+const advOf=n=>{for(const l of [4,3,2])if(ADV[l].includes(n))return l;return 1;};
+const advBadge=n=>{const l=advOf(n);return `<span class="badge-adv adv-${l}">${ADV_LABEL[l]}</span>`;};
+const ADV_LINKS=`<a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html" target="_blank" rel="noopener">US advisories</a>, <a href="https://www.gov.uk/foreign-travel-advice" target="_blank" rel="noopener">UK foreign travel advice</a>`;
+
+const $=id=>document.getElementById(id);
+function km(a,b){const r=x=>x*Math.PI/180,R=6371;const dLa=r(b[0]-a[0]),dLo=r(b[1]-a[1]);
+ const h=Math.sin(dLa/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+const iso=d=>d.toISOString().slice(0,10);
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>"$"+Math.round(n).toLocaleString();
+const SLOTS=["Morning","Afternoon","Evening"];
+
+// ---- Destination picker: popular first, search + vibe filters ----
+let vibeFilter=null;
+function renderDest(keep){
+ const term=$("destSearch").value.trim().toLowerCase();
+ const all=Object.keys(DEST).filter(k=>
+  (!term||k.toLowerCase().includes(term)||DEST[k].cap.toLowerCase().includes(term))&&
+  (!vibeFilter||vibesOf(k).includes(vibeFilter)));
+ const pop=TOP.filter(k=>all.includes(k));
+ const rest=all.filter(k=>!TOP.includes(k)).sort((a,b)=>a.localeCompare(b));
+ const opt=k=>`<option value="${esc(k)}">${DEST[k].flag} ${esc(k)}${advOf(k)>=3?" ⚠️":""}</option>`;
+ $("dest").innerHTML=all.length
+  ?(pop.length?`<optgroup label="★ Popular">${pop.map(opt).join("")}</optgroup>`:"")+(rest.length?`<optgroup label="All countries A–Z">${rest.map(opt).join("")}</optgroup>`:"")
+  :'<option value="">No matches. Clear the search or vibe filter</option>';
+ if(keep&&all.includes(keep))$("dest").value=keep;
+ showDestInfo();
+}
+function showDestInfo(){
+ const n=$("dest").value;
+ if(!n||!DEST[n]){$("destInfo").innerHTML="";return;}
+ const l=advOf(n);
+ $("destInfo").innerHTML=advBadge(n)+(l>1?`<div class="adv-note mt-1">${ADV_TEXT[l]}</div>`:"")+
+  `<div class="mt-1">${vibesOf(n).map(v=>`<span class="vibe">${VIBES_LABEL[v]||v}</span>`).join("")}</div>`;
+}
+$("vibeBar").innerHTML=Object.entries(VIBES_LABEL).map(([k,v])=>`<button type="button" class="vibe" data-vibe="${k}" aria-pressed="false">${v}</button>`).join("");
+$("vibeBar").addEventListener("click",e=>{
+ const b=e.target.closest("[data-vibe]");if(!b)return;
+ const v=b.dataset.vibe;
+ vibeFilter=vibeFilter===v?null:v;
+ document.querySelectorAll("#vibeBar .vibe").forEach(x=>{const on=x.dataset.vibe===vibeFilter;x.classList.toggle("active",on);x.setAttribute("aria-pressed",on);});
+ renderDest($("dest").value);
+});
+$("destSearch").addEventListener("input",()=>renderDest($("dest").value));
+$("dest").addEventListener("change",showDestInfo);
+renderDest("Japan");
+
+// Default start date: 30 days from now
+const d0=new Date();d0.setDate(d0.getDate()+30);$("start").value=iso(d0);
+const d1=new Date(d0);d1.setDate(d1.getDate()+4);$("end").value=iso(d1);
+$("start").min=iso(new Date());
+$("start").addEventListener("change",()=>{if($("end").value<$("start").value)$("end").value=$("start").value;$("end").min=$("start").value;});
+$("end").min=$("start").value;
+
+// ---- Detect where the user is (browser location + free reverse geocoding) ----
+let origin=null; // {city,country,lat,lng}
+function setOrigin(o,detected){
+ origin=o;
+ $("originText").innerHTML=o?`📍 Starting from <strong>${esc(o.city?o.city+", ":"")}${esc(o.country||"")}</strong> ${detected?"(detected)":""}`:"📍 Starting point unknown";
+ $("manualOrigin").style.display=o?"none":"block";
+}
+function detect(){
+ $("originText").textContent="📍 Waiting for your permission… choose “Allow” in the browser prompt.";
+ if(!navigator.geolocation){setOrigin(null);$("originText").textContent="📍 This browser can't share location.";return;}
+ navigator.geolocation.getCurrentPosition(async pos=>{
+  const lat=pos.coords.latitude,lng=pos.coords.longitude;
+  let city="",country="",cc="";
+  try{
+   const r=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+   const j=await r.json();city=j.city||j.locality||"";country=j.countryName||"";cc=j.countryCode||"";
+  }catch(e){}
+  setOrigin({city,country,cc,lat,lng},true);
+  if(!city&&!country)$("originText").innerHTML="📍 Location detected (name unavailable)";
+ },err=>{
+  setOrigin(null);
+  $("originText").textContent=err.code===1?"📍 Location is blocked. Click the lock icon beside the address bar, allow Location, then press “Allow location”.":location.protocol==="file:"?"📍 Location needs https:// or localhost. It won't work when opened as a local file.":"📍 Couldn't detect your location.";
+ },{timeout:10000,maximumAge:600000});
+}
+$("retryLoc").onclick=detect;
+detect();
+
+// Preselect from ?country=
+const q=new URLSearchParams(location.search).get("country");
+if(q&&DEST[q]){$("dest").value=q;showDestInfo();}
+
+let current=null;
+
+function build(e){
+ e.preventDefault();
+ const dest=$("dest").value,trav=parseInt($("travelers").value),style=$("style").value,start=$("start").value,end=$("end").value;
+ if(!dest||!DEST[dest]){$("formError").textContent="Choose a destination.";return;}
+ if(!start||!end){$("formError").textContent="Pick your trip start day and end day.";return;}
+ const days=Math.round((new Date(end+"T00:00")-new Date(start+"T00:00"))/864e5)+1;
+ if(!(days>=1)){$("formError").textContent="The trip end day must be on or after the trip start day.";return;}
+ const interests=[...document.querySelectorAll("#interests input:checked")].map(i=>i.value);
+ if(!(days>=1&&days<=14)){$("formError").textContent="Choose between 1 and 14 days.";return;}
+ if(!(trav>=1&&trav<=20)){$("formError").textContent="Choose between 1 and 20 travelers.";return;}
+ if(!interests.length){$("formError").textContent="Pick at least one interest.";return;}
+ $("formError").textContent="";
+ let o=origin;
+ if(!o&&$("originInput").value.trim())o={city:$("originInput").value.trim(),country:"",lat:null,lng:null,manual:true};
+ current={dest,days,trav,style,start,end,interests,origin:o};
+ render(current);
+ $("result").scrollIntoView({behavior:"smooth"});
+}
+
+function render(t){
+ const D=DEST[t.dest];
+ // Activity pool, interleaved across interests
+ const pools=t.interests.map(i=>[...D.acts[i]]);
+ const picks=[];
+ while(picks.length<t.days*2&&pools.some(p=>p.length)){
+  pools.forEach(p=>{if(p.length)picks.push(p.shift());});
+ }
+ while(picks.length<t.days*2)picks.push("Free time to explore at your own pace");
+ const foodPool=D.acts.food;
+
+ let html="";
+ for(let i=0;i<t.days;i++){
+  let label=`Day ${i+1}`;
+  if(t.start){const d=new Date(t.start+"T00:00");d.setDate(d.getDate()+i);label+=` · ${d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}`;}
+  const title=i===0?"Arrive and settle in":i===t.days-1?"Last highlights and departure":"Explore";
+  const morning=i===0?"Arrive, check in, get a local SIM or eSIM":picks[i*2];
+  const afternoon=i===0?picks[0]:picks[i*2+1];
+  const evening=foodPool[i%foodPool.length];
+  html+=`<div class="day-card"><h5>${label} <span class="text-muted fw-normal">– ${title}</span></h5>
+   <div class="day-slot"><span class="when">Morning</span><span>${morning}</span></div>
+   <div class="day-slot"><span class="when">Afternoon</span><span>${afternoon}</span></div>
+   <div class="day-slot"><span class="when">Evening</span><span>${evening}</span></div></div>`;
+ }
+ $("itinerary").innerHTML=html;
+
+ // Advisory banner (informational, never blocks planning)
+ const L=advOf(t.dest);
+ $("advisory").innerHTML=L>1?`<div class="adv-box adv-${L}"><strong>${ADV_LABEL[L]}</strong><div class="adv-text small mt-1">${ADV_TEXT[L]} Check current official advice before booking: ${ADV_LINKS}.</div></div>`:"";
+
+ // Budget
+ const [stay,food,trans,act]=D.cost[t.style];
+ const rooms=Math.ceil(t.trav/2);
+ const stayTotal=stay*t.days*t.trav; // per-person rate (shared rooms assumed)
+ const o=t.origin;let travelNote="";let travelRow=[];let travelPP=0;
+ if(o&&o.lat!=null){
+  const dist=km([o.lat,o.lng],COORD[t.dest]);
+  const same=(o.cc&&o.cc===D.cc)||(o.country&&(o.country.includes(t.dest)||t.dest.includes(o.country)));
+  const mult={budget:1,mid:1.4,luxury:3.5}[t.style];
+  if(dist<60){travelNote=`You're already close to the destination region (${Math.round(dist)} km from the capital).`;}
+  else if(same||dist<600){travelPP=Math.max(10,dist*0.08*2)*(t.style==="luxury"?2.5:1);travelNote=`About ${Math.round(dist).toLocaleString()} km away: travel by bus, train or car.`;travelRow=[["🚆 Round-trip travel",travelPP*t.trav]];}
+  else{travelPP=(60+dist*0.09)*2*mult;const hrs=dist/800+0.7;travelNote=`About ${Math.round(dist).toLocaleString()} km from ${esc(o.city||o.country||"you")}, roughly ${hrs.toFixed(1)} h by air each way.`;travelRow=[["✈️ Round-trip flights",travelPP*t.trav]];}
+ }
+ const rows=[...travelRow,["🛏️ Stay",stayTotal],["🍽️ Food",food*t.days*t.trav],["🚌 Local transport",trans*t.days*t.trav],["🎟️ Activities",act*t.days*t.trav]];
+ const total=rows.reduce((a,r)=>a+r[1],0);
+ $("budget").innerHTML=rows.map(r=>`<div class="budget-row"><span>${r[0]}</span><span>${fmt(r[1])}</span></div>`).join("")+
+  `<div class="budget-row"><span>Total</span><span>${fmt(total)}</span></div>`+
+  `<p class="small text-muted mt-2 mb-0">About ${fmt(total/t.trav)} per person · ${rooms} room${rooms>1?"s":""} assumed (2 per room).</p>`;
+
+ $("resultTitle").textContent=`${D.flag} ${t.days} day${t.days>1?"s":""} in ${t.dest}`+(o&&(o.city||o.country)?` from ${o.city||o.country}`:"");
+ $("stats").innerHTML=[["📅",t.days+" days","Duration"],["👥",t.trav,"Travelers"],["💰",fmt(total),"Estimated total"],["🌤️",D.best,D.generic?"Best time (general guide)":"Best time to visit"]]
+  .map(s=>`<div class="col-6 col-md-3"><div class="stat-box"><div>${s[0]}</div><div class="num">${s[1]}</div><div class="small text-muted">${s[2]}</div></div></div>`).join("");
+
+ $("tips").innerHTML=(travelNote?`<li>${travelNote}</li>`:"")+D.tips.map(x=>`<li>${x}</li>`).join("")+`<li>Local currency: ${D.cur}.</li>`;
+
+ const base=["Passport and visa documents","Travel insurance details","Phone charger and power bank","Medications","Copies of bookings"];
+ $("packing").innerHTML=[...base,...D.pack].map(x=>`<label class="pack-item"><input type="checkbox" class="form-check-input me-2"><span>${x}</span></label>`).join("");
+
+ $("result").style.display="block";
+}
+
+// Saved trips (stored in this browser)
+function getSaved(){try{return JSON.parse(localStorage.getItem("worldcoreTrips")||"[]");}catch(e){return [];}}
+function setSaved(a){try{localStorage.setItem("worldcoreTrips",JSON.stringify(a));}catch(e){}}
+function renderSaved(){
+ const s=getSaved();
+ if(!s.length){$("saved").innerHTML='<p class="text-muted mb-0">No saved trips yet. Build an itinerary and press “Save trip”.</p>';return;}
+ $("saved").innerHTML=s.map((t,i)=>`<div class="saved-trip"><span>${(DEST[t.dest]||{}).flag||"🌍"} <strong>${esc(t.dest)}</strong> · ${t.days} days${t.origin&&(t.origin.city||t.origin.country)?" from "+esc(t.origin.city||t.origin.country):""} · ${t.trav} traveler${t.trav>1?"s":""} · ${t.style}</span>
+  <span><button class="btn btn-sm btn-light me-1" data-open="${i}">Open</button><button class="btn btn-sm btn-outline-danger" data-del="${i}">Delete</button></span></div>`).join("");
+}
+$("saved").addEventListener("click",e=>{
+ const s=getSaved();
+ if(e.target.dataset.open!==undefined){
+  const t=s[+e.target.dataset.open];current=t;
+  // reset filters so the saved destination is always selectable
+  $("destSearch").value="";vibeFilter=null;
+  document.querySelectorAll("#vibeBar .vibe").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-pressed","false");});
+  renderDest(t.dest);
+  $("travelers").value=t.trav;$("style").value=t.style;if(t.start)$("start").value=t.start;if(t.end)$("end").value=t.end;
+  document.querySelectorAll("#interests input").forEach(i=>i.checked=t.interests.includes(i.value));
+  render(t);$("result").scrollIntoView({behavior:"smooth"});
+ }
+ if(e.target.dataset.del!==undefined){s.splice(+e.target.dataset.del,1);setSaved(s);renderSaved();}
+});
+$("saveBtn").onclick=()=>{
+ if(!current)return;
+ const s=getSaved();s.unshift(current);setSaved(s.slice(0,10));renderSaved();
+ $("saveBtn").textContent="✅ Saved";setTimeout(()=>$("saveBtn").textContent="💾 Save trip",1500);
+};
+$("plannerForm").addEventListener("submit",build);
+renderSaved();
+</script>
+</body></html>

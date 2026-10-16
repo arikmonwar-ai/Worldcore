@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Countries | WORLDCORE</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body.tts-enabled .country-card { cursor: help; }
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">🌍 WORLDCORE</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="index.html">🏠 Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="countries.html">Countries</a></li>
+        <li class="nav-item"><a class="nav-link" href="compare.html">Compare</a></li>
+        <li class="nav-item"><a class="nav-link" href="timeline.html">Timeline</a></li>
+        <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
+        <li class="nav-item"><a class="nav-link" href="mystery.html">Mystery</a></li>
+        <li class="nav-item"><a class="nav-link" href="bangladesh.html">🇧🇩 Bangladesh</a></li>
+      </ul>
+      <div class="form-check form-switch text-white ms-lg-3 mt-2 mt-lg-0">
+        <input class="form-check-input" type="checkbox" id="ttsToggle" checked>
+        <label class="form-check-label small fw-bold" for="ttsToggle" id="ttsLabel">🔊 Audio Reader: ON</label>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-5">
+  <h1 class="mb-2">🌎 Country Explorer</h1>
+  <p class="text-secondary">Choose a country to begin exploring.</p>
+  <input id="search" aria-label="Search countries" class="form-control form-control-lg mb-4" placeholder="Search countries...">
+  <div id="countries" class="row g-4"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const countries = [
+  ["🇧🇩","Bangladesh","Asia","Dhaka"],["🇯🇵","Japan","Asia","Tokyo"],["🇫🇷","France","Europe","Paris"],
+  ["🇧🇷","Brazil","South America","Brasília"],["🇨🇦","Canada","North America","Ottawa"],
+  ["🇦🇺","Australia","Oceania","Canberra"],["🇪🇬","Egypt","Africa","Cairo"],["🇮🇳","India","Asia","New Delhi"],
+  ["🇬🇧","United Kingdom","Europe","London"],["🇺🇸","United States","North America","Washington, D.C."],
+  ["🇦🇫","Afghanistan","Asia","Kabul"],["🇦🇱","Albania","Europe","Tirana"],["🇩🇿","Algeria","Africa","Algiers"],
+  ["🇦🇩","Andorra","Europe","Andorra la Vella"],["🇦🇴","Angola","Africa","Luanda"],
+  ["🇦🇬","Antigua and Barbuda","North America","St. John's"],["🇦🇷","Argentina","South America","Buenos Aires"],
+  ["🇦🇲","Armenia","Asia","Yerevan"],["🇦🇹","Austria","Europe","Vienna"],["🇦🇿","Azerbaijan","Asia","Baku"],
+  ["🇧🇸","Bahamas","North America","Nassau"],["🇧🇭","Bahrain","Asia","Manama"],
+  ["🇧🇧","Barbados","North America","Bridgetown"],["🇧🇾","Belarus","Europe","Minsk"],
+  ["🇧🇪","Belgium","Europe","Brussels"],["🇧🇿","Belize","North America","Belmopan"],
+  ["🇧🇯","Benin","Africa","Porto-Novo"],["🇧🇹","Bhutan","Asia","Thimphu"],["🇧🇴","Bolivia","South America","Sucre"],
+  ["🇧🇦","Bosnia and Herzegovina","Europe","Sarajevo"],["🇧🇼","Botswana","Africa","Gaborone"],
+  ["🇧🇳","Brunei","Asia","Bandar Seri Begawan"],["🇧🇬","Bulgaria","Europe","Sofia"],
+  ["🇧🇫","Burkina Faso","Africa","Ouagadougou"],["🇧🇮","Burundi","Africa","Gitega"],
+  ["🇨🇻","Cabo Verde","Africa","Praia"],["🇰🇭","Cambodia","Asia","Phnom Penh"],["🇨🇲","Cameroon","Africa","Yaoundé"],
+  ["🇨🇫","Central African Republic","Africa","Bangui"],["🇹🇩","Chad","Africa","N'Djamena"],
+  ["🇨🇱","Chile","South America","Santiago"],["🇨🇳","China","Asia","Beijing"],["🇨🇴","Colombia","South America","Bogotá"],
+  ["🇰🇲","Comoros","Africa","Moroni"],["🇨🇬","Congo (Brazzaville)","Africa","Brazzaville"],
+  ["🇨🇩","Congo (Kinshasa)","Africa","Kinshasa"],["🇨🇷","Costa Rica","North America","San José"],
+  ["🇭🇷","Croatia","Europe","Zagreb"],["🇨🇺","Cuba","North America","Havana"],["🇨🇾","Cyprus","Asia","Nicosia"],
+  ["🇨🇿","Czechia","Europe","Prague"],["🇩🇰","Denmark","Europe","Copenhagen"],["🇩🇯","Djibouti","Africa","Djibouti"],
+  ["🇩🇲","Dominica","North America","Roseau"],["🇩🇴","Dominican Republic","North America","Santo Domingo"],
+  ["🇪🇨","Ecuador","South America","Quito"],["🇸🇻","El Salvador","North America","San Salvador"],
+  ["🇬🇶","Equatorial Guinea","Africa","Malabo"],["🇪🇷","Eritrea","Africa","Asmara"],["🇪🇪","Estonia","Europe","Tallinn"],
+  ["🇸🇿","Eswatini","Africa","Mbabane"],["🇪🇹","Ethiopia","Africa","Addis Ababa"],["🇫🇯","Fiji","Oceania","Suva"],
+  ["🇫🇮","Finland","Europe","Helsinki"],["🇬🇦","Gabon","Africa","Libreville"],["🇬🇲","Gambia","Africa","Banjul"],
+  ["🇬🇪","Georgia","Asia","Tbilisi"],["🇩🇪","Germany","Europe","Berlin"],["🇬🇭","Ghana","Africa","Accra"],
+  ["🇬🇷","Greece","Europe","Athens"],["🇬🇩","Grenada","North America","St. George's"],
+  ["🇬🇹","Guatemala","North America","Guatemala City"],["🇬🇳","Guinea","Africa","Conakry"],
+  ["🇬🇼","Guinea-Bissau","Africa","Bissau"],["🇬🇾","Guyana","South America","Georgetown"],
+  ["🇭🇹","Haiti","North America","Port-au-Prince"],["🇭🇳","Honduras","North America","Tegucigalpa"],
+  ["🇭🇺","Hungary","Europe","Budapest"],["🇮🇸","Iceland","Europe","Reykjavík"],["🇮🇩","Indonesia","Asia","Jakarta"],
+  ["🇮🇷","Iran","Asia","Tehran"],["🇮🇶","Iraq","Asia","Baghdad"],["🇮🇪","Ireland","Europe","Dublin"],
+  ["🇮🇱","Israel","Asia","Jerusalem"],["🇮🇹","Italy","Europe","Rome"],["🇨🇮","Ivory Coast","Africa","Yamoussoukro"],
+  ["🇯🇲","Jamaica","North America","Kingston"],["🇯🇴","Jordan","Asia","Amman"],["🇰🇿","Kazakhstan","Asia","Astana"],
+  ["🇰🇪","Kenya","Africa","Nairobi"],["🇰🇮","Kiribati","Oceania","Tarawa"],["🇰🇵","North Korea","Asia","Pyongyang"],
+  ["🇰🇷","South Korea","Asia","Seoul"],["🇰🇼","Kuwait","Asia","Kuwait City"],["🇰🇬","Kyrgyzstan","Asia","Bishkek"],
+  ["🇱🇦","Laos","Asia","Vientiane"],["🇱🇻","Latvia","Europe","Riga"],["🇱🇧","Lebanon","Asia","Beirut"],
+  ["🇱🇸","Lesotho","Africa","Maseru"],["🇱🇷","Liberia","Africa","Monrovia"],["🇱🇾","Libya","Africa","Tripoli"],
+  ["🇱🇮","Liechtenstein","Europe","Vaduz"],["🇱🇹","Lithuania","Europe","Vilnius"],
+  ["🇱🇺","Luxembourg","Europe","Luxembourg"],["🇲🇬","Madagascar","Africa","Antananarivo"],
+  ["🇲🇼","Malawi","Africa","Lilongwe"],["🇲🇾","Malaysia","Asia","Kuala Lumpur"],["🇲🇻","Maldives","Asia","Malé"],
+  ["🇲🇱","Mali","Africa","Bamako"],["🇲🇹","Malta","Europe","Valletta"],["🇲🇭","Marshall Islands","Oceania","Majuro"],
+  ["🇲🇷","Mauritania","Africa","Nouakchott"],["🇲🇺","Mauritius","Africa","Port Louis"],
+  ["🇲🇽","Mexico","North America","Mexico City"],["🇫🇲","Micronesia","Oceania","Palikir"],
+  ["🇲🇩","Moldova","Europe","Chisinau"],["🇲🇨","Monaco","Europe","Monaco"],["🇲🇳","Mongolia","Asia","Ulaanbaatar"],
+  ["🇲🇪","Montenegro","Europe","Podgorica"],["🇲🇦","Morocco","Africa","Rabat"],["🇲🇿","Mozambique","Africa","Maputo"],
+  ["🇲🇲","Myanmar","Asia","Naypyidaw"],["🇳🇦","Namibia","Africa","Windhoek"],["🇳🇷","Nauru","Oceania","Yaren"],
+  ["🇳🇵","Nepal","Asia","Kathmandu"],["🇳🇱","Netherlands","Europe","Amsterdam"],
+  ["🇳🇿","New Zealand","Oceania","Wellington"],["🇳🇮","Nicaragua","North America","Managua"],
+  ["🇳🇪","Niger","Africa","Niamey"],["🇳🇬","Nigeria","Africa","Abuja"],["🇲🇰","North Macedonia","Europe","Skopje"],
+  ["🇳🇴","Norway","Europe","Oslo"],["🇴🇲","Oman","Asia","Muscat"],["🇵🇰","Pakistan","Asia","Islamabad"],
+  ["🇵🇼","Palau","Oceania","Ngerulmud"],["🇵🇸","Palestine","Asia","Ramallah"],["🇵🇦","Panama","North America","Panama City"],
+  ["🇵🇬","Papua New Guinea","Oceania","Port Moresby"],["🇵🇾","Paraguay","South America","Asunción"],
+  ["🇵🇪","Peru","South America","Lima"],["🇵🇭","Philippines","Asia","Manila"],["🇵🇱","Poland","Europe","Warsaw"],
+  ["🇵🇹","Portugal","Europe","Lisbon"],["🇶🇦","Qatar","Asia","Doha"],["🇷🇴","Romania","Europe","Bucharest"],
+  ["🇷🇺","Russia","Europe","Moscow"],["🇷🇼","Rwanda","Africa","Kigali"],
+  ["🇰🇳","Saint Kitts and Nevis","North America","Basseterre"],["🇱🇨","Saint Lucia","North America","Castries"],
+  ["🇻🇨","Saint Vincent and the Grenadines","North America","Kingstown"],["🇼🇸","Samoa","Oceania","Apia"],
+  ["🇸🇲","San Marino","Europe","San Marino"],["🇸🇹","Sao Tome and Principe","Africa","São Tomé"],
+  ["🇸🇦","Saudi Arabia","Asia","Riyadh"],["🇸🇳","Senegal","Africa","Dakar"],["🇷🇸","Serbia","Europe","Belgrade"],
+  ["🇸🇨","Seychelles","Africa","Victoria"],["🇸🇱","Sierra Leone","Africa","Freetown"],
+  ["🇸🇬","Singapore","Asia","Singapore"],["🇸🇰","Slovakia","Europe","Bratislava"],
+  ["🇸🇮","Slovenia","Europe","Ljubljana"],["🇸🇧","Solomon Islands","Oceania","Honiara"],
+  ["🇸🇴","Somalia","Africa","Mogadishu"],["🇿🇦","South Africa","Africa","Pretoria"],
+  ["🇸🇸","South Sudan","Africa","Juba"],["🇪🇸","Spain","Europe","Madrid"],
+  ["🇱🇰","Sri Lanka","Asia","Sri Jayawardenepura Kotte"],["🇸🇩","Sudan","Africa","Khartoum"],
+  ["🇸🇷","Suriname","South America","Paramaribo"],["🇸🇪","Sweden","Europe","Stockholm"],
+  ["🇨🇭","Switzerland","Europe","Bern"],["🇸🇾","Syria","Asia","Damascus"],["🇹🇼","Taiwan","Asia","Taipei"],
+  ["🇹🇯","Tajikistan","Asia","Dushanbe"],["🇹🇿","Tanzania","Africa","Dodoma"],["🇹🇭","Thailand","Asia","Bangkok"],
+  ["🇹🇱","Timor-Leste","Asia","Dili"],["🇹🇬","Togo","Africa","Lomé"],["🇹🇴","Tonga","Oceania","Nukuʻalofa"],
+  ["🇹🇹","Trinidad and Tobago","North America","Port of Spain"],["🇹🇳","Tunisia","Africa","Tunis"],
+  ["🇹🇷","Turkey","Asia","Ankara"],["🇹🇲","Turkmenistan","Asia","Ashgabat"],["🇹🇻","Tuvalu","Oceania","Funafuti"],
+  ["🇺🇬","Uganda","Africa","Kampala"],["🇺🇦","Ukraine","Europe","Kyiv"],
+  ["🇦🇪","United Arab Emirates","Asia","Abu Dhabi"],["🇺🇾","Uruguay","South America","Montevideo"],
+  ["🇺🇿","Uzbekistan","Asia","Tashkent"],["🇻🇺","Vanuatu","Oceania","Port Vila"],
+  ["🇻🇦","Vatican City","Europe","Vatican City"],["🇻🇪","Venezuela","South America","Caracas"],
+  ["🇻🇳","Vietnam","Asia","Hanoi"],["🇾🇪","Yemen","Asia","Sana'a"],["🇿🇲","Zambia","Africa","Lusaka"],
+  ["🇿🇼","Zimbabwe","Africa","Harare"]
+];
+
+const box = document.getElementById("countries");
+
+function render(list) {
+  if (!list.length) {
+    box.innerHTML = `<p class="text-secondary">No countries found.</p>`;
+    return;
+  }
+  box.innerHTML = list.map(c => `
+    <div class="col-sm-6 col-lg-4">
+      <div class="country-card" data-speak="${c[1]}. Located in ${c[2]}. Capital: ${c[3]}.">
+        <div class="flag">${c[0]}</div>
+        <h3>${c[1]}</h3>
+        <p>🌐 ${c[2]}<br>🏛️ Capital: ${c[3]}</p>
+        <a class="btn btn-dark" href="country.html?country=${encodeURIComponent(c[1])}">Explore</a>
+      </div>
+    </div>`).join("");
+}
+render(countries);
+
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  render(countries.filter(c => c[1].toLowerCase().includes(q)));
+});
+
+// --- Audio Reader (text-to-speech) ---
+const ttsToggle = document.getElementById("ttsToggle");
+const ttsLabel  = document.getElementById("ttsLabel");
+const synth = "speechSynthesis" in window ? window.speechSynthesis : null;
+
+if (!synth) {
+  ttsToggle.checked = false;
+  ttsToggle.disabled = true;
+  ttsLabel.textContent = "🔇 Audio Reader: not supported";
+}
+
+const ttsOn = () => !!synth && ttsToggle.checked;
+
+function syncTts() {
+  document.body.classList.toggle("tts-enabled", ttsOn());
+  if (synth && !ttsToggle.disabled) {
+    ttsLabel.textContent = ttsOn() ? "🔊 Audio Reader: ON" : "🔇 Audio Reader: OFF";
+  }
+  if (synth && !ttsOn()) synth.cancel();
+}
+ttsToggle.addEventListener("change", syncTts);
+syncTts();
+
+function speak(card) {
+  if (!ttsOn()) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(card.dataset.speak);
+  u.lang = "en-US";
+  synth.speak(u);
+}
+
+// Delegated listeners survive re-rendering when the user searches
+box.addEventListener("mouseover", e => {
+  const card = e.target.closest(".country-card");
+  if (card && !card.contains(e.relatedTarget)) speak(card);
+});
+box.addEventListener("mouseout", e => {
+  const card = e.target.closest(".country-card");
+  if (card && !card.contains(e.relatedTarget) && ttsOn()) synth.cancel();
+});
+// Keyboard users: tabbing to a card's Explore button reads the card
+box.addEventListener("focusin", e => {
+  const card = e.target.closest(".country-card");
+  if (card) speak(card);
+});
+window.addEventListener("beforeunload", () => synth && synth.cancel());
+</script>
+</body></html>

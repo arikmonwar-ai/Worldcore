@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Quiz | WORLDCORE</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body.tts-enabled .quiz-card [data-speak] { cursor: help; }
+</style>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">🌍 WORLDCORE</a>
+    <div class="d-flex align-items-center gap-3 ms-auto">
+      <div class="form-check form-switch text-white m-0">
+        <input class="form-check-input" type="checkbox" id="ttsToggle" checked>
+        <label class="form-check-label small fw-bold" for="ttsToggle" id="ttsLabel">🔊 Audio Reader: ON</label>
+      </div>
+      <a class="btn btn-outline-light" href="index.html">Home</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-5">
+  <div class="quiz-card">
+    <div id="quiz"></div>
+    <button id="next" class="btn btn-dark mt-3" data-speak="Next question">Next Question</button>
+    <h3 id="score" class="mt-4"></h3>
+  </div>
+</main>
+
+<script>
+const bank=[
+
+  // GEOGRAPHY
+  ["Geography","What is the capital of Japan?",["Tokyo","Kyoto","Osaka","Sapporo"],0],
+  ["Geography","Which continent is Brazil in?",["Europe","Africa","South America","Asia"],2],
+  ["Geography","What is the capital of Bangladesh?",["Chattogram","Dhaka","Sylhet","Rajshahi"],1],
+  ["Geography","Which country uses the Yen?",["France","Japan","Brazil","Canada"],1],
+  ["Geography","Which is the largest country in the world by area?",["Canada","United States","China","Russia"],3],
+  ["Geography","The Sundarbans mangrove forest is shared between Bangladesh and which other country?",["Nepal","India","Myanmar","Bhutan"],1],
+  ["Geography","What is the capital of France?",["Madrid","Paris","Rome","Berlin"],1],
+  ["Geography","Which country is known as the Land of the Rising Sun?",["China","Japan","South Korea","Thailand"],1],
+  ["Geography","What is the largest continent?",["Africa","Asia","Europe","North America"],1],
+  ["Geography","Which is the smallest continent?",["Europe","Australia","South America","Antarctica"],1],
+  ["Geography","What is the capital of Australia?",["Sydney","Melbourne","Canberra","Perth"],2],
+  ["Geography","Which country has the largest population in the world?",["India","China","United States","Russia"],0],
+  ["Geography","What is the capital of Canada?",["Toronto","Vancouver","Ottawa","Montreal"],2],
+  ["Geography","Which ocean is the largest?",["Atlantic Ocean","Indian Ocean","Pacific Ocean","Arctic Ocean"],2],
+  ["Geography","Mount Everest is located in which mountain range?",["Andes","Alps","Himalayas","Rockies"],2],
+  ["Geography","Which desert is the largest hot desert in the world?",["Gobi","Sahara","Kalahari","Arabian"],1],
+  ["Geography","What is the capital of Italy?",["Milan","Venice","Rome","Naples"],2],
+  ["Geography","Which country is shaped like a boot?",["Greece","Italy","Spain","Portugal"],1],
+  ["Geography","Which country has the city of Cairo as its capital?",["Egypt","Morocco","Sudan","Libya"],0],
+  ["Geography","What is the capital of China?",["Shanghai","Beijing","Hong Kong","Guangzhou"],1],
+  ["Geography","Which river flows through Egypt?",["Amazon","Nile","Danube","Ganges"],1],
+  ["Geography","Which country is famous for the city of Istanbul?",["Greece","Türkiye","Iran","Iraq"],1],
+  ["Geography","What is the capital of South Korea?",["Busan","Seoul","Incheon","Daegu"],1],
+  ["Geography","Which country has the city of Barcelona?",["Portugal","Spain","Italy","France"],1],
+  ["Geography","Which is the longest mountain range on land?",["Himalayas","Andes","Rockies","Alps"],1],
+
+  // HISTORY
+  ["History","In which year did Bangladesh gain independence?",["1947","1965","1971","1980"],2],
+  ["History","Which empire was Egypt part of before British influence in the modern era?",["Roman Empire","Ottoman Empire","Mongol Empire","Aztec Empire"],1],
+  ["History","In which year did the United States declare independence?",["1776","1812","1865","1901"],0],
+  ["History","Who was the first person to walk on the Moon?",["Yuri Gagarin","Neil Armstrong","Buzz Aldrin","Michael Collins"],1],
+  ["History","Which ancient civilization built the pyramids of Giza?",["Romans","Greeks","Ancient Egyptians","Vikings"],2],
+  ["History","Who was the first President of the United States?",["Abraham Lincoln","George Washington","Thomas Jefferson","John Adams"],1],
+  ["History","The Great Wall is located in which country?",["Japan","China","India","Mongolia"],1],
+  ["History","Which famous ship sank in 1912?",["Titanic","Mayflower","Santa Maria","Endeavour"],0],
+  ["History","Who was known as the 'Mahatma'?",["Jawaharlal Nehru","Mahatma Gandhi","Subhas Chandra Bose","Muhammad Ali Jinnah"],1],
+  ["History","Which civilization developed democracy in Athens?",["Roman","Greek","Egyptian","Persian"],1],
+  ["History","Who was the first emperor of the Roman Empire?",["Julius Caesar","Augustus","Nero","Constantine"],1],
+  ["History","The Renaissance began in which country?",["France","Italy","Germany","Spain"],1],
+  ["History","Which ancient city was buried by Mount Vesuvius?",["Pompeii","Athens","Sparta","Carthage"],0],
+  ["History","Who discovered penicillin?",["Isaac Newton","Alexander Fleming","Louis Pasteur","Albert Einstein"],1],
+  ["History","Which event began in 1789 in France?",["Industrial Revolution","French Revolution","American Civil War","Renaissance"],1],
+
+  // CULTURE
+  ["Culture","Which festival marks the Bengali New Year?",["Diwali","Eid al-Fitr","Pohela Boishakh","Hanami"],2],
+  ["Culture","Samba and bossa nova are music styles most associated with which country?",["Brazil","Portugal","Mexico","Spain"],0],
+  ["Culture","Which instrument has black and white keys?",["Guitar","Violin","Piano","Flute"],2],
+  ["Culture","Which country is famous for the traditional dance Flamenco?",["Spain","Italy","France","Greece"],0],
+  ["Culture","Kimchi is a traditional food associated with which country?",["Japan","China","South Korea","Thailand"],2],
+  ["Culture","Which country is famous for sushi?",["Japan","Vietnam","India","Indonesia"],0],
+  ["Culture","What is the traditional clothing worn by many Japanese people called?",["Kimono","Sari","Hanbok","Kilt"],0],
+  ["Culture","Which sport is strongly associated with Brazil?",["Cricket","Football","Ice Hockey","Baseball"],1],
+  ["Culture","Which country is famous for the traditional Scottish kilt?",["Ireland","Scotland","Wales","Norway"],1],
+  ["Culture","What is the traditional Korean dress called?",["Kimono","Hanbok","Sari","Ao Dai"],1],
+
+  // SCIENCE
+  ["Science","Which river forms the world's largest delta together with the Brahmaputra and Meghna?",["Nile","Amazon","Ganges","Yangtze"],2],
+  ["Science","The Bengal tiger's largest remaining habitat is found in which ecosystem?",["Savanna","Mangrove forest","Tundra","Desert"],1],
+  ["Science","What is the chemical formula for water?",["CO2","H2O","O2","NaCl"],1],
+  ["Science","Which planet is known as the Red Planet?",["Venus","Mars","Jupiter","Mercury"],1],
+  ["Science","What is the closest star to Earth?",["Sirius","The Sun","Polaris","Alpha Centauri"],1],
+  ["Science","Which gas do humans need to breathe?",["Carbon dioxide","Oxygen","Hydrogen","Helium"],1],
+  ["Science","What force pulls objects toward Earth?",["Magnetism","Friction","Gravity","Electricity"],2],
+  ["Science","What is the largest organ of the human body?",["Heart","Brain","Skin","Liver"],2],
+  ["Science","Which part of a plant absorbs most water from the soil?",["Flower","Roots","Fruit","Stem"],1],
+  ["Science","What is the center of an atom called?",["Electron","Nucleus","Proton","Shell"],1],
+  ["Science","Which blood cells help fight infections?",["Red blood cells","White blood cells","Platelets","Plasma"],1],
+  ["Science","What is the boiling point of water at sea level?",["50°C","75°C","100°C","150°C"],2],
+  ["Science","Which vitamin is produced by the skin when exposed to sunlight?",["Vitamin A","Vitamin B","Vitamin C","Vitamin D"],3],
+  ["Science","What is the process by which plants make food using sunlight?",["Respiration","Photosynthesis","Digestion","Fermentation"],1],
+  ["Science","Which organ pumps blood around the human body?",["Lungs","Brain","Heart","Kidneys"],2],
+
+  // SPACE
+  ["Space","How many planets are in our Solar System?",["7","8","9","10"],1],
+  ["Space","Which is the largest planet in our Solar System?",["Earth","Saturn","Jupiter","Neptune"],2],
+  ["Space","Which planet is closest to the Sun?",["Venus","Earth","Mercury","Mars"],2],
+  ["Space","Which planet is famous for its rings?",["Mars","Saturn","Venus","Mercury"],1],
+  ["Space","What is Earth's natural satellite?",["The Sun","The Moon","Mars","Venus"],1],
+  ["Space","Which planet is known for having a large red storm called the Great Red Spot?",["Jupiter","Saturn","Neptune","Uranus"],0],
+  ["Space","What galaxy contains our Solar System?",["Andromeda","Milky Way","Whirlpool","Sombrero"],1],
+  ["Space","Who was the first human in space?",["Neil Armstrong","Yuri Gagarin","Buzz Aldrin","Alan Shepard"],1],
+  ["Space","What is a group of stars forming a recognizable pattern called?",["Galaxy","Constellation","Asteroid","Nebula"],1],
+  ["Space","Which planet is sometimes called Earth's sister planet?",["Mars","Venus","Jupiter","Neptune"],1],
+
+  // TECHNOLOGY
+  ["Technology","What does CPU stand for?",["Central Processing Unit","Computer Personal Unit","Central Program Utility","Core Processing User"],0],
+  ["Technology","Which language is mainly used to structure webpages?",["Python","HTML","C++","SQL"],1],
+  ["Technology","Which language is commonly used to add interactivity to webpages?",["JavaScript","HTML","CSS","XML"],0],
+  ["Technology","What does CSS stand for?",["Computer Style System","Cascading Style Sheets","Creative System Software","Code Styling Syntax"],1],
+  ["Technology","Which company developed the Android operating system?",["Microsoft","Google","Apple","IBM"],1],
+  ["Technology","What does AI stand for?",["Automated Internet","Artificial Intelligence","Advanced Interface","Applied Information"],1],
+  ["Technology","Which device is commonly used to store files permanently?",["RAM","SSD","CPU","GPU"],1],
+  ["Technology","What does URL stand for?",["Universal Resource Locator","Uniform Resource Locator","User Reference Link","Universal Routing Link"],1],
+  ["Technology","Which technology is commonly used to connect devices wirelessly over short distances?",["Bluetooth","Ethernet","HDMI","USB"],0],
+  ["Technology","What does USB stand for?",["Universal Serial Bus","United System Board","Universal Storage Base","User Service Bus"],0],
+
+  // ENVIRONMENT
+  ["Environment","Which gas is a major contributor to the greenhouse effect?",["Oxygen","Carbon dioxide","Helium","Neon"],1],
+  ["Environment","What is the process of planting trees to restore forests called?",["Deforestation","Reforestation","Urbanization","Irrigation"],1],
+  ["Environment","Which ecosystem is characterized by very little rainfall?",["Rainforest","Desert","Wetland","Tundra"],1],
+  ["Environment","What is the main source of energy for Earth?",["The Moon","The Sun","Volcanoes","Wind"],1],
+  ["Environment","Which layer protects Earth from much of the Sun's harmful ultraviolet radiation?",["Troposphere","Ozone layer","Core","Mantle"],1],
+  ["Environment","Which renewable energy source uses moving air?",["Solar","Wind","Geothermal","Hydroelectric"],1],
+  ["Environment","Which renewable energy source uses sunlight?",["Solar energy","Coal","Natural gas","Oil"],0],
+  ["Environment","What is the practice of using materials again instead of throwing them away?",["Recycling","Mining","Burning","Drilling"],0],
+  ["Environment","Which animal is commonly associated with the Arctic?",["Penguin","Polar bear","Kangaroo","Tiger"],1],
+  ["Environment","Which ecosystem is especially important for absorbing carbon and supporting marine life?",["Coral reef","Desert","Tundra","Grassland"],0],
+
+  // GENERAL KNOWLEDGE
+  ["General Knowledge","How many days are there in a leap year?",["365","366","364","367"],1],
+  ["General Knowledge","How many continents are commonly recognized?",["5","6","7","8"],2],
+  ["General Knowledge","How many sides does a hexagon have?",["5","6","7","8"],1],
+  ["General Knowledge","Which is the largest ocean?",["Atlantic","Indian","Pacific","Arctic"],2],
+  ["General Knowledge","What is the currency of the United Kingdom?",["Euro","Dollar","Pound sterling","Franc"],2],
+  ["General Knowledge","Which language has the most native speakers in the world?",["English","Spanish","Mandarin Chinese","French"],2],
+  ["General Knowledge","What is the fastest land animal?",["Lion","Cheetah","Horse","Tiger"],1],
+  ["General Knowledge","Which animal is known as the largest living land animal?",["Elephant","Giraffe","Hippopotamus","Rhinoceros"],0],
+  ["General Knowledge","How many colors are traditionally listed in a rainbow?",["5","6","7","8"],2],
+  ["General Knowledge","Which metal is represented by the chemical symbol Au?",["Silver","Gold","Copper","Iron"],1],
+  ["General Knowledge","What is the hardest natural substance?",["Iron","Diamond","Quartz","Granite"],1],
+  ["General Knowledge","Which bird is often associated with peace?",["Eagle","Dove","Crow","Falcon"],1],
+  ["General Knowledge","What is the largest mammal on Earth?",["Elephant","Blue whale","Giraffe","Orca"],1],
+  ["General Knowledge","Which chess piece can move in an L-shape?",["Bishop","Rook","Knight","Queen"],2],
+  ["General Knowledge","How many squares are there on a standard chessboard?",["32","48","64","81"],2],
+  ["General Knowledge","Which sport uses a bat, ball and wickets?",["Football","Cricket","Tennis","Basketball"],1],
+  ["General Knowledge","How many players are on the field for one football team during normal play?",["9","10","11","12"],2]
+];
+
+function shuffle(arr){ return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]); }
+const q=shuffle(bank).slice(0,8);
+let i=0,score=0,answered=false;
+
+const quiz=document.getElementById("quiz");
+const next=document.getElementById("next");
+const scoreBox=document.getElementById("score");
+
+// --- Audio Reader (text-to-speech) ---
+const ttsToggle=document.getElementById("ttsToggle");
+const ttsLabel=document.getElementById("ttsLabel");
+const synth="speechSynthesis" in window ? window.speechSynthesis : null;
+
+if(!synth){
+  ttsToggle.checked=false;
+  ttsToggle.disabled=true;
+  ttsLabel.textContent="🔇 Audio Reader: not supported";
+}
+const ttsOn=()=>!!synth && ttsToggle.checked;
+
+function syncTts(){
+  document.body.classList.toggle("tts-enabled",ttsOn());
+  if(synth && !ttsToggle.disabled){
+    ttsLabel.textContent=ttsOn()?"🔊 Audio Reader: ON":"🔇 Audio Reader: OFF";
+  }
+  if(synth && !ttsOn()) synth.cancel();
+}
+ttsToggle.addEventListener("change",syncTts);
+syncTts();
+
+function speak(text){
+  if(!ttsOn()||!text) return;
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="en-US";
+  synth.speak(u);
+}
+
+// Delegated listeners on the card survive re-rendering between questions
+const card=document.querySelector(".quiz-card");
+card.addEventListener("mouseover",e=>{
+  const el=e.target.closest("[data-speak]");
+  if(el && !el.contains(e.relatedTarget)) speak(el.dataset.speak);
+});
+card.addEventListener("focusin",e=>{
+  const el=e.target.closest("[data-speak]");
+  if(el) speak(el.dataset.speak);
+});
+window.addEventListener("beforeunload",()=>synth&&synth.cancel());
+
+// --- Quiz ---
+function show(){
+  answered=false;
+  const x=q[i];
+  quiz.innerHTML=`<p class="text-secondary">Question ${i+1} of ${q.length} · ${x[0]}</p>
+    <h2 data-speak="${x[1]}">${x[1]}</h2>
+    ${x[2].map((o,n)=>`<button class="answer btn btn-outline-dark d-block w-100 text-start my-2" data-n="${n}" data-speak="${o}">${o}</button>`).join("")}`;
+  speak(`Question ${i+1} of ${q.length}. ${x[1]}`);
+  document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>{
+    if(answered)return;
+    answered=true;
+    if(+b.dataset.n===x[3]){
+      score++;
+      b.classList.add("border-success");
+      scoreEl();
+      speak("Correct!");
+    } else {
+      b.classList.add("border-danger");
+      document.querySelectorAll(".answer")[x[3]].classList.add("border-success");
+      scoreEl();
+      speak(`Incorrect. The correct answer is ${x[2][x[3]]}.`);
+    }
+  });
+}
+
+function scoreEl(){
+  const t=`Score: ${score}/${q.length}`;
+  scoreBox.textContent=t;
+  scoreBox.dataset.speak=`Your score is ${score} out of ${q.length}.`;
+}
+
+next.onclick=()=>{
+  i++;
+  if(i<q.length) show();
+  else {
+    const msg=`Quiz complete! You scored ${score} out of ${q.length}.`;
+    quiz.innerHTML=`<div data-speak="${msg}"><h1>🎉 Quiz Complete!</h1><p class="lead">You scored <b>${score}/${q.length}</b>.</p></div><button class="btn btn-dark" data-speak="Try again" onclick="location.reload()">Try Again</button>`;
+    next.style.display="none";
+    scoreEl();
+    speak(msg);
+  }
+};
+
+show();
+</script>
+</body></html>

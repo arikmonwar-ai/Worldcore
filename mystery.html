@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mystery Country | WORLDCORE</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="css/style.css"></head>
+<body><nav class="navbar navbar-dark bg-dark"><div class="container"><a class="navbar-brand fw-bold" href="index.html">🌍 WORLDCORE</a><a class="btn btn-outline-light" href="index.html">Home</a></div></nav>
+<main class="container py-5"><div class="mystery-card">
+  <div class="display-3">🔎</div>
+  <h1>Mystery Country</h1>
+  <p class="text-secondary" id="progress"></p>
+  <p class="lead" id="clues"></p>
+  <input id="guess" class="form-control form-control-lg" placeholder="Enter your guess" autocomplete="off">
+  <button id="checkBtn" onclick="check()" class="btn btn-dark btn-lg mt-3">Submit Guess</button>
+  <button onclick="newMystery()" class="btn btn-outline-light btn-lg mt-3">🎲 New Mystery</button>
+  <div id="answer" class="mt-4 fw-bold"></div>
+</div></main>
+<script>
+const mysteries=[
+
+  {name:"Japan", clues:["I am an island country in East Asia.","My capital is Tokyo.","My currency is the Yen."]},
+  {name:"Bangladesh", clues:["I sit on the world's largest river delta.","My capital is Dhaka.","I am home to the Sundarbans mangrove forest."]},
+  {name:"Egypt", clues:["Most of my land is desert.","A famous river runs through the heart of my country.","I am home to the Pyramids of Giza."]},
+  {name:"Brazil", clues:["I am the largest country in South America.","Most of the Amazon rainforest lies within my borders.","My capital is Brasília."]},
+  {name:"Australia", clues:["I am both a country and a continent.","My capital is Canberra, not my largest city.","Kangaroos and koalas are native to me."]},
+  {name:"Canada", clues:["I am the second-largest country in the world by area.","My capital is Ottawa.","I share the world's longest international border with the United States."]},
+  {name:"France", clues:["A famous iron tower stands in my capital.","My capital is Paris.","My currency is the Euro."]},
+  {name:"India", clues:["I am home to more than a billion people.","The Taj Mahal is one of my most famous landmarks.","My capital is New Delhi."]},
+
+  {name:"Afghanistan", clues:["I am a mountainous country in Central and South Asia.","My capital is Kabul.","The Hindu Kush mountain range crosses my land."]},
+  {name:"Albania", clues:["I am a country on the Adriatic and Ionian Seas.","My capital is Tirana.","My flag features a double-headed eagle."]},
+  {name:"Algeria", clues:["I am the largest country in Africa by area.","My capital is Algiers.","Much of my territory lies in the Sahara Desert."]},
+  {name:"Andorra", clues:["I am a tiny country in the Pyrenees.","My capital is Andorra la Vella.","I am located between France and Spain."]},
+  {name:"Angola", clues:["I am a country on Africa's southwestern coast.","My capital is Luanda.","Portuguese is my official language."]},
+  {name:"Antigua and Barbuda", clues:["I am a Caribbean island country.","My capital is Saint John's.","I am made up of two main islands."]},
+  {name:"Argentina", clues:["I am one of the largest countries in South America.","My capital is Buenos Aires.","I am famous for tango and the Andes."]},
+  {name:"Armenia", clues:["I am a landlocked country in the South Caucasus.","My capital is Yerevan.","I was one of the earliest countries to adopt Christianity as a state religion."]},
+  {name:"Austria", clues:["I am a landlocked country in Central Europe.","My capital is Vienna.","The Alps cover much of my western and central regions."]},
+  {name:"Azerbaijan", clues:["I lie between Europe and Asia near the Caspian Sea.","My capital is Baku.","I am sometimes called the Land of Fire."]},
+
+  {name:"Bahamas", clues:["I am an island country in the Atlantic Ocean.","My capital is Nassau.","I am made up of hundreds of islands and cays."]},
+  {name:"Bahrain", clues:["I am a small island country in the Persian Gulf.","My capital is Manama.","I am known for my pearl-diving history and Formula 1 race."]},
+  {name:"Barbados", clues:["I am an island country in the Caribbean.","My capital is Bridgetown.","I am the birthplace of Rihanna."]},
+  {name:"Belarus", clues:["I am a landlocked country in Eastern Europe.","My capital is Minsk.","I share borders with Russia, Ukraine, Poland, Lithuania and Latvia."]},
+  {name:"Belgium", clues:["I am a small country in Western Europe.","My capital is Brussels.","I am famous for chocolate, waffles and Belgian beer."]},
+  {name:"Belize", clues:["I am the only country in Central America where English is the official language.","My capital is Belmopan.","I have part of the world's second-largest barrier reef system."]},
+  {name:"Benin", clues:["I am a West African country on the Gulf of Guinea.","My capital is Porto-Novo.","The historic kingdom of Dahomey existed here."]},
+  {name:"Bhutan", clues:["I am a mountainous country in the Himalayas.","My capital is Thimphu.","I measure development using Gross National Happiness."]},
+  {name:"Bolivia", clues:["I am a landlocked country in South America.","My constitutional capital is Sucre.","The famous Salar de Uyuni salt flat is here."]},
+  {name:"Bosnia and Herzegovina", clues:["I am a country in southeastern Europe.","My capital is Sarajevo.","The historic city of Mostar is famous for its Old Bridge."]},
+  {name:"Botswana", clues:["I am a landlocked country in southern Africa.","My capital is Gaborone.","The Okavango Delta is one of my famous natural features."]},
+  {name:"Brunei", clues:["I am a small country on the island of Borneo.","My capital is Bandar Seri Begawan.","My economy has historically depended heavily on oil and natural gas."]},
+  {name:"Bulgaria", clues:["I am a country in southeastern Europe.","My capital is Sofia.","I have a coastline along the Black Sea."]},
+  {name:"Burkina Faso", clues:["I am a landlocked country in West Africa.","My capital is Ouagadougou.","My name roughly means 'land of upright people'."]},
+  {name:"Burundi", clues:["I am a small landlocked country in East Africa.","My political capital is Gitega.","Lake Tanganyika lies along my western border."]},
+
+  {name:"Cabo Verde", clues:["I am an island country off the west coast of Africa.","My capital is Praia.","My islands are volcanic in origin."]},
+  {name:"Cambodia", clues:["I am a country in mainland Southeast Asia.","My capital is Phnom Penh.","Angkor Wat is one of my most famous landmarks."]},
+  {name:"Cameroon", clues:["I am a Central African country.","My capital is Yaoundé.","Mount Cameroon is one of Africa's highest volcanic mountains."]},
+  {name:"Central African Republic", clues:["I am a landlocked country in Central Africa.","My capital is Bangui.","My territory is crossed by the Ubangi River."]},
+  {name:"Chad", clues:["I am a landlocked country in north-central Africa.","My capital is N'Djamena.","Lake Chad is named after me."]},
+  {name:"Chile", clues:["I am a long, narrow country on South America's western edge.","My capital is Santiago.","The Atacama Desert is one of the driest places on Earth."]},
+  {name:"China", clues:["I have the world's largest population among countries for much of recent history.","My capital is Beijing.","The Great Wall stretches across my northern regions."]},
+  {name:"Colombia", clues:["I am a country in northwestern South America.","My capital is Bogotá.","I am one of the world's major coffee-producing countries."]},
+  {name:"Comoros", clues:["I am an island country in the Indian Ocean.","My capital is Moroni.","I lie between Madagascar and the African mainland."]},
+  {name:"Democratic Republic of the Congo", clues:["I am one of Africa's largest countries by area.","My capital is Kinshasa.","The Congo River flows through my territory."]},
+  {name:"Republic of the Congo", clues:["I am a Central African country.","My capital is Brazzaville.","My capital sits across the Congo River from Kinshasa."]},
+  {name:"Costa Rica", clues:["I am a Central American country.","My capital is San José.","I am famous for rainforests, volcanoes and biodiversity."]},
+  {name:"Croatia", clues:["I am a country on the Adriatic Sea.","My capital is Zagreb.","The historic city of Dubrovnik is one of my famous destinations."]},
+  {name:"Cuba", clues:["I am the largest island country in the Caribbean.","My capital is Havana.","My flag has a blue, white and red design with a star."]},
+  {name:"Cyprus", clues:["I am an island country in the eastern Mediterranean.","My capital is Nicosia.","I am geographically close to Turkey and the Middle East."]},
+  {name:"Czechia", clues:["I am a landlocked country in Central Europe.","My capital is Prague.","Prague Castle is one of my famous landmarks."]},
+
+  {name:"Denmark", clues:["I am a Nordic country in Northern Europe.","My capital is Copenhagen.","Greenland and the Faroe Islands are part of my Kingdom."]},
+  {name:"Djibouti", clues:["I am a small country in the Horn of Africa.","My capital is Djibouti City.","I sit near the Bab el-Mandeb strait."]},
+  {name:"Dominica", clues:["I am a mountainous island country in the Caribbean.","My capital is Roseau.","I am known for lush rainforests and volcanic landscapes."]},
+  {name:"Dominican Republic", clues:["I share the island of Hispaniola with Haiti.","My capital is Santo Domingo.","I am one of the Caribbean's major tourism destinations."]},
+
+  {name:"Ecuador", clues:["I am a country on South America's western coast.","My capital is Quito.","The Galápagos Islands belong to me."]},
+  {name:"El Salvador", clues:["I am the smallest country in mainland Central America.","My capital is San Salvador.","I am known for many volcanoes and Pacific beaches."]},
+  {name:"Equatorial Guinea", clues:["I am a Central African country.","My capital is Malabo.","I am the only Spanish-speaking country in Africa besides territories with Spanish status."]},
+  {name:"Eritrea", clues:["I am a country on the Red Sea coast.","My capital is Asmara.","I became independent from Ethiopia in 1993."]},
+  {name:"Estonia", clues:["I am a Baltic country in Northern Europe.","My capital is Tallinn.","I am known for advanced digital government services."]},
+  {name:"Eswatini", clues:["I am a small landlocked country in southern Africa.","My capital is Mbabane.","I was formerly known as Swaziland."]},
+  {name:"Ethiopia", clues:["I am a landlocked country in the Horn of Africa.","My capital is Addis Ababa.","I am famous for my ancient civilization and unique calendar."]},
+
+  {name:"Fiji", clues:["I am an island country in the South Pacific.","My capital is Suva.","I consist of more than 300 islands."]},
+  {name:"Finland", clues:["I am a Nordic country in Northern Europe.","My capital is Helsinki.","I am famous for thousands of lakes and forests."]},
+
+  {name:"Gabon", clues:["I am a Central African country on the Atlantic coast.","My capital is Libreville.","Large areas of my territory are covered by rainforest."]},
+  {name:"Gambia", clues:["I am a small country in West Africa.","My capital is Banjul.","Most of my territory follows the Gambia River."]},
+  {name:"Georgia", clues:["I am a country in the Caucasus.","My capital is Tbilisi.","I have a coastline on the Black Sea."]},
+  {name:"Germany", clues:["I am a major country in Central Europe.","My capital is Berlin.","The Rhine River is one of my famous waterways."]},
+  {name:"Ghana", clues:["I am a West African country on the Gulf of Guinea.","My capital is Accra.","I was formerly known as the Gold Coast."]},
+  {name:"Greece", clues:["I am a country in southeastern Europe.","My capital is Athens.","Ancient Greek civilization influenced much of Western culture."]},
+  {name:"Grenada", clues:["I am a small Caribbean island country.","My capital is St. George's.","I am sometimes called the Spice Isle."]},
+  {name:"Guatemala", clues:["I am a Central American country.","My capital is Guatemala City.","I am home to many ancient Maya sites."]},
+  {name:"Guinea", clues:["I am a West African country on the Atlantic coast.","My capital is Conakry.","Mount Nimba is one of my notable natural landmarks."]},
+  {name:"Guinea-Bissau", clues:["I am a small country in West Africa.","My capital is Bissau.","The Bijagós Islands are part of my territory."]},
+  {name:"Guyana", clues:["I am on the northern coast of South America.","My capital is Georgetown.","English is my official language."]},
+
+  {name:"Haiti", clues:["I occupy the western part of Hispaniola.","My capital is Port-au-Prince.","I became the world's first independent Black republic in 1804."]},
+  {name:"Honduras", clues:["I am a Central American country.","My capital is Tegucigalpa.","The ancient Maya city of Copán is here."]},
+  {name:"Hungary", clues:["I am a landlocked country in Central Europe.","My capital is Budapest.","The Danube River flows through my capital."]},
+
+  {name:"Iceland", clues:["I am a Nordic island country in the North Atlantic.","My capital is Reykjavík.","I am famous for volcanoes, glaciers and geothermal activity."]},
+  {name:"Indonesia", clues:["I am an enormous archipelago in Southeast Asia.","My capital is Jakarta.","I have thousands of islands and many active volcanoes."]},
+  {name:"Iran", clues:["I am a country in Western Asia.","My capital is Tehran.","I was historically known as Persia."]},
+  {name:"Iraq", clues:["I am a country in Western Asia.","My capital is Baghdad.","The Tigris and Euphrates rivers flow through my land."]},
+  {name:"Ireland", clues:["I am an island country in northwestern Europe.","My capital is Dublin.","The shamrock is one of my famous symbols."]},
+  {name:"Israel", clues:["I am a country on the eastern Mediterranean coast.","My capital is Jerusalem.","The Dead Sea lies along my eastern region."]},
+  {name:"Italy", clues:["My country has a distinctive boot-like shape.","My capital is Rome.","The Colosseum is one of my most famous landmarks."]},
+
+  {name:"Jamaica", clues:["I am an island country in the Caribbean.","My capital is Kingston.","I am strongly associated with reggae music and Bob Marley."]},
+  {name:"Jordan", clues:["I am a country in the Middle East.","My capital is Amman.","The ancient city of Petra is one of my most famous landmarks."]},
+
+  {name:"Kazakhstan", clues:["I am the world's largest landlocked country.","My capital is Astana.","I stretch across Central Asia and into Europe."]},
+  {name:"Kenya", clues:["I am an East African country.","My capital is Nairobi.","The Maasai Mara and Mount Kenya are famous places here."]},
+  {name:"Kiribati", clues:["I am a Pacific island country spread across a huge ocean area.","My capital is South Tarawa.","My territory is made up of low-lying atolls."]},
+  {name:"Kuwait", clues:["I am a small country on the Persian Gulf.","My capital is Kuwait City.","Oil is an important part of my economy."]},
+  {name:"Kyrgyzstan", clues:["I am a mountainous country in Central Asia.","My capital is Bishkek.","The Tian Shan mountains cover much of my territory."]},
+
+  {name:"Laos", clues:["I am a landlocked country in Southeast Asia.","My capital is Vientiane.","The Mekong River runs along much of my western side."]},
+  {name:"Latvia", clues:["I am one of the Baltic states.","My capital is Riga.","I have a coastline on the Baltic Sea."]},
+  {name:"Lebanon", clues:["I am a small country on the eastern Mediterranean.","My capital is Beirut.","The ancient cedar tree is a symbol of my country."]},
+  {name:"Lesotho", clues:["I am completely surrounded by South Africa.","My capital is Maseru.","I am a mountainous kingdom."]},
+  {name:"Liberia", clues:["I am a country on the West African coast.","My capital is Monrovia.","My flag resembles the flag of the United States."]},
+  {name:"Libya", clues:["I am a North African country on the Mediterranean.","My capital is Tripoli.","Much of my territory is covered by the Sahara Desert."]},
+  {name:"Liechtenstein", clues:["I am a tiny landlocked country in Europe.","My capital is Vaduz.","I lie between Switzerland and Austria."]},
+  {name:"Lithuania", clues:["I am the largest of the three Baltic states by area.","My capital is Vilnius.","I lie on the southeastern shore of the Baltic Sea."]},
+  {name:"Luxembourg", clues:["I am a small landlocked country in Western Europe.","My capital is Luxembourg City.","I am one of Europe's smallest countries."]},
+
+  {name:"Madagascar", clues:["I am a large island country off Africa's southeastern coast.","My capital is Antananarivo.","Lemurs are native to me."]},
+  {name:"Malawi", clues:["I am a landlocked country in southeastern Africa.","My capital is Lilongwe.","Lake Malawi is one of my most famous natural features."]},
+  {name:"Malaysia", clues:["I am a Southeast Asian country divided between a peninsula and Borneo.","My capital is Kuala Lumpur.","The Petronas Twin Towers are in my capital."]},
+  {name:"Maldives", clues:["I am an island nation in the Indian Ocean.","My capital is Malé.","I am made up of coral atolls and famous for tropical beaches."]},
+  {name:"Mali", clues:["I am a landlocked country in West Africa.","My capital is Bamako.","The ancient city of Timbuktu is within my borders."]},
+  {name:"Malta", clues:["I am a small island country in the Mediterranean.","My capital is Valletta.","I lie south of Italy."]},
+  {name:"Marshall Islands", clues:["I am a Pacific island country.","My capital is Majuro.","I consist mainly of atolls and small islands."]},
+  {name:"Mauritania", clues:["I am a country in northwest Africa.","My capital is Nouakchott.","The Sahara Desert covers much of my territory."]},
+  {name:"Mauritius", clues:["I am an island country in the Indian Ocean.","My capital is Port Louis.","I lie east of Madagascar."]},
+  {name:"Mexico", clues:["I am a country in North America.","My capital is Mexico City.","Ancient civilizations such as the Maya and Aztec flourished here."]},
+  {name:"Micronesia", clues:["I am a Pacific island country.","My capital is Palikir.","My official name is the Federated States of Micronesia."]},
+  {name:"Moldova", clues:["I am a landlocked country in Eastern Europe.","My capital is Chișinău.","I lie between Romania and Ukraine."]},
+  {name:"Monaco", clues:["I am one of the world's smallest countries.","My capital is Monaco.","I lie on the French Riviera beside the Mediterranean Sea."]},
+  {name:"Mongolia", clues:["I am a landlocked country between Russia and China.","My capital is Ulaanbaatar.","The Gobi Desert lies in my southern region."]},
+  {name:"Montenegro", clues:["I am a small country on the Adriatic Sea.","My capital is Podgorica.","My name means 'Black Mountain'."]},
+  {name:"Morocco", clues:["I am a North African country.","My capital is Rabat.","The Atlas Mountains and Sahara Desert are found here."]},
+  {name:"Mozambique", clues:["I am a southeastern African country on the Indian Ocean.","My capital is Maputo.","Portuguese is my official language."]},
+  {name:"Myanmar", clues:["I am a country in Southeast Asia.","My capital is Naypyidaw.","The Irrawaddy River is one of my major waterways."]},
+
+  {name:"Namibia", clues:["I am a country on Africa's southwestern coast.","My capital is Windhoek.","The Namib Desert is one of the world's oldest deserts."]},
+  {name:"Nauru", clues:["I am one of the world's smallest countries.","I have no official capital city, although Yaren is the main administrative area.","I am a tiny island in the Pacific Ocean."]},
+  {name:"Nepal", clues:["I am a landlocked country in South Asia.","My capital is Kathmandu.","Mount Everest lies along my border with China."]},
+  {name:"Netherlands", clues:["I am a country in Western Europe.","My capital is Amsterdam.","A large part of my land lies at or below sea level."]},
+  {name:"New Zealand", clues:["I am an island country in the southwestern Pacific.","My capital is Wellington.","The kiwi is one of my national symbols."]},
+  {name:"Nicaragua", clues:["I am the largest country in Central America by area.","My capital is Managua.","Lake Nicaragua is one of my major natural features."]},
+  {name:"Niger", clues:["I am a landlocked country in West Africa.","My capital is Niamey.","Much of my northern territory is part of the Sahara."]},
+  {name:"Nigeria", clues:["I am the most populous country in Africa.","My capital is Abuja.","The Niger and Benue rivers meet in my territory."]},
+  {name:"North Korea", clues:["I occupy the northern part of the Korean Peninsula.","My capital is Pyongyang.","I share a border with China, Russia and South Korea."]},
+  {name:"North Macedonia", clues:["I am a landlocked country in southeastern Europe.","My capital is Skopje.","Lake Ohrid is one of my famous natural landmarks."]},
+  {name:"Norway", clues:["I am a Nordic country famous for fjords.","My capital is Oslo.","I have a long coastline along the North Atlantic."]},
+
+  {name:"Oman", clues:["I am a country on the southeastern Arabian Peninsula.","My capital is Muscat.","I have coastlines on the Arabian Sea and Gulf of Oman."]},
+
+  {name:"Pakistan", clues:["I am a South Asian country.","My capital is Islamabad.","The Indus River is central to my geography and history."]},
+  {name:"Palau", clues:["I am a small island country in the western Pacific.","My capital is Ngerulmud.","I am famous for the Rock Islands and marine biodiversity."]},
+  {name:"Palestine", clues:["I am in the Middle East.","Ramallah serves as an important administrative center.","My territory includes the West Bank and Gaza Strip."]},
+  {name:"Panama", clues:["I connect North and South America.","My capital is Panama City.","The Panama Canal crosses my country."]},
+  {name:"Papua New Guinea", clues:["I occupy the eastern half of the island of New Guinea.","My capital is Port Moresby.","Hundreds of languages are spoken here."]},
+  {name:"Paraguay", clues:["I am a landlocked country in South America.","My capital is Asunción.","The Paraguay River runs through my country."]},
+  {name:"Peru", clues:["I am a country on South America's Pacific coast.","My capital is Lima.","Machu Picchu is one of my most famous landmarks."]},
+  {name:"Philippines", clues:["I am an archipelago in Southeast Asia.","My capital is Manila.","I consist of more than 7,000 islands."]},
+  {name:"Poland", clues:["I am a country in Central Europe.","My capital is Warsaw.","I have a coastline on the Baltic Sea."]},
+  {name:"Portugal", clues:["I am a country on the Iberian Peninsula.","My capital is Lisbon.","I share my only land border with Spain."]},
+
+  {name:"Qatar", clues:["I am a small peninsula country in the Persian Gulf.","My capital is Doha.","I hosted the 2022 FIFA World Cup."]},
+
+  {name:"Romania", clues:["I am a country in southeastern Europe.","My capital is Bucharest.","The Carpathian Mountains cross my territory."]},
+  {name:"Russia", clues:["I am the world's largest country by area.","My capital is Moscow.","I stretch across both Europe and Asia."]},
+  {name:"Rwanda", clues:["I am a small landlocked country in East Africa.","My capital is Kigali.","I am known as the 'Land of a Thousand Hills'."]},
+
+  {name:"Saint Kitts and Nevis", clues:["I am a two-island country in the Caribbean.","My capital is Basseterre.","I am one of the smallest countries in the Americas."]},
+  {name:"Saint Lucia", clues:["I am an island country in the Caribbean.","My capital is Castries.","The Pitons are two famous volcanic peaks here."]},
+  {name:"Saint Vincent and the Grenadines", clues:["I am a Caribbean island country.","My capital is Kingstown.","My country includes the island of Saint Vincent and smaller Grenadine islands."]},
+  {name:"Samoa", clues:["I am a Polynesian island country in the Pacific.","My capital is Apia.","I am located northeast of Fiji."]},
+  {name:"San Marino", clues:["I am one of the world's smallest countries.","My capital has the same name as my country.","I am completely surrounded by Italy."]},
+  {name:"São Tomé and Príncipe", clues:["I am an island country in the Gulf of Guinea.","My capital is São Tomé.","I consist of two main islands and smaller islands."]},
+  {name:"Saudi Arabia", clues:["I occupy much of the Arabian Peninsula.","My capital is Riyadh.","Mecca and Medina are two of Islam's holiest cities."]},
+  {name:"Senegal", clues:["I am a West African country on the Atlantic Ocean.","My capital is Dakar.","I surround the Gambia on three sides."]},
+  {name:"Serbia", clues:["I am a landlocked country in southeastern Europe.","My capital is Belgrade.","The Danube and Sava rivers meet in my capital."]},
+  {name:"Seychelles", clues:["I am an island country in the Indian Ocean.","My capital is Victoria.","I consist of many islands northeast of Madagascar."]},
+  {name:"Sierra Leone", clues:["I am a West African country on the Atlantic coast.","My capital is Freetown.","My name means 'Lion Mountains'."]},
+  {name:"Singapore", clues:["I am a city-state in Southeast Asia.","My capital is Singapore.","I am located at the southern tip of the Malay Peninsula."]},
+  {name:"Slovakia", clues:["I am a landlocked country in Central Europe.","My capital is Bratislava.","The Carpathian Mountains extend into my territory."]},
+  {name:"Slovenia", clues:["I am a small country in Central Europe.","My capital is Ljubljana.","I have a short coastline on the Adriatic Sea."]},
+  {name:"Solomon Islands", clues:["I am an island country in the South Pacific.","My capital is Honiara.","I lie east of Papua New Guinea."]},
+  {name:"Somalia", clues:["I occupy much of the Horn of Africa.","My capital is Mogadishu.","I have one of Africa's longest coastlines."]},
+  {name:"South Africa", clues:["I am at the southern tip of Africa.","I have three capital cities.","My country has coastlines on both the Atlantic and Indian Oceans."]},
+  {name:"South Korea", clues:["I occupy the southern part of the Korean Peninsula.","My capital is Seoul.","I am famous for K-pop, technology and electronics."]},
+  {name:"South Sudan", clues:["I am the world's newest internationally recognized country.","My capital is Juba.","I became independent from Sudan in 2011."]},
+  {name:"Spain", clues:["I occupy most of the Iberian Peninsula.","My capital is Madrid.","I am famous for flamenco, football and historic cities."]},
+  {name:"Sri Lanka", clues:["I am an island country south of India.","My administrative capital is Sri Jayawardenepura Kotte.","I am famous for tea plantations and ancient Buddhist sites."]},
+  {name:"Sudan", clues:["I am a country in northeastern Africa.","My capital is Khartoum.","The Blue Nile and White Nile meet near my capital."]},
+  {name:"Suriname", clues:["I am the smallest sovereign country in South America by area.","My capital is Paramaribo.","Dutch is my official language."]},
+  {name:"Sweden", clues:["I am a Nordic country in Northern Europe.","My capital is Stockholm.","I am famous for forests, lakes and the Nobel Prize."]},
+  {name:"Switzerland", clues:["I am a landlocked country in Central Europe.","My federal city is Bern.","I am famous for the Alps, watches and chocolate."]},
+  {name:"Syria", clues:["I am a country in Western Asia.","My capital is Damascus.","I am home to some of the world's oldest continuously inhabited cities."]},
+
+  {name:"Tajikistan", clues:["I am a mountainous country in Central Asia.","My capital is Dushanbe.","The Pamir Mountains occupy much of my eastern region."]},
+  {name:"Tanzania", clues:["I am an East African country.","My capital is Dodoma.","Mount Kilimanjaro, Africa's highest mountain, is here."]},
+  {name:"Thailand", clues:["I am a country in Southeast Asia.","My capital is Bangkok.","I am famous for temples, tropical islands and Thai cuisine."]},
+  {name:"Timor-Leste", clues:["I occupy the eastern half of Timor island.","My capital is Dili.","I am one of Asia's newest countries."]},
+  {name:"Togo", clues:["I am a narrow West African country.","My capital is Lomé.","I have a coastline on the Gulf of Guinea."]},
+  {name:"Tonga", clues:["I am a Polynesian island country.","My capital is Nuku'alofa.","I consist of more than 150 islands, many of them uninhabited."]},
+  {name:"Trinidad and Tobago", clues:["I am a two-island country in the Caribbean.","My capital is Port of Spain.","I am famous for Carnival and steelpan music."]},
+  {name:"Tunisia", clues:["I am a North African country on the Mediterranean.","My capital is Tunis.","The ancient city of Carthage was located here."]},
+  {name:"Turkey", clues:["I lie across Europe and Asia.","My capital is Ankara.","I control the Bosporus Strait between the Black Sea and Sea of Marmara."]},
+  {name:"Turkmenistan", clues:["I am a country in Central Asia.","My capital is Ashgabat.","The Karakum Desert covers much of my territory."]},
+  {name:"Tuvalu", clues:["I am one of the world's smallest countries.","My capital is Funafuti.","I am a low-lying Pacific island nation."]},
+
+  {name:"Uganda", clues:["I am a landlocked country in East Africa.","My capital is Kampala.","The source region of the White Nile is associated with Lake Victoria here."]},
+  {name:"Ukraine", clues:["I am a large country in Eastern Europe.","My capital is Kyiv.","I have a coastline along the Black Sea."]},
+  {name:"United Arab Emirates", clues:["I am a federation of seven emirates.","My capital is Abu Dhabi.","Dubai is one of my most famous cities."]},
+  {name:"United Kingdom", clues:["I am an island country in northwestern Europe.","My capital is London.","I am made up of England, Scotland, Wales and Northern Ireland."]},
+  {name:"United States", clues:["I am a country in North America.","My capital is Washington, D.C.","I have 50 states."]},
+  {name:"Uruguay", clues:["I am a small country in southeastern South America.","My capital is Montevideo.","I lie between Argentina and Brazil."]},
+  {name:"Uzbekistan", clues:["I am a landlocked country in Central Asia.","My capital is Tashkent.","I am one of only two doubly landlocked countries in the world."]},
+
+  {name:"Vanuatu", clues:["I am an island country in the South Pacific.","My capital is Port Vila.","I am an archipelago made up of more than 80 islands."]},
+  {name:"Vatican City", clues:["I am the world's smallest independent state by area and population.","I am located inside Rome.","I am the headquarters of the Catholic Church."]},
+  {name:"Venezuela", clues:["I am a country on the northern coast of South America.","My capital is Caracas.","Angel Falls, the world's highest uninterrupted waterfall, is here."]},
+  {name:"Vietnam", clues:["I am a country in Southeast Asia.","My capital is Hanoi.","My coastline stretches along the South China Sea."]},
+
+  {name:"Yemen", clues:["I am a country on the southern Arabian Peninsula.","My capital is Sana'a.","I have a coastline along the Red Sea and Arabian Sea."]},
+
+  {name:"Zambia", clues:["I am a landlocked country in southern Africa.","My capital is Lusaka.","Victoria Falls lies on my border with Zimbabwe."]},
+  {name:"Zimbabwe", clues:["I am a landlocked country in southern Africa.","My capital is Harare.","Victoria Falls lies on my border with Zambia."]}
+
+];
+
+let current, tries, locked = false;
+
+function newMystery(){
+  current = mysteries[Math.floor(Math.random()*mysteries.length)];
+  tries = 0;
+  locked = false;
+  guess.disabled = false;
+  checkBtn.disabled = false;
+  progress.textContent = "Guess the country from the clues below:";
+  clues.innerHTML = current.clues.map(c => `• ${c}`).join("<br>");
+  answer.textContent = "";
+  answer.className = "mt-4 fw-bold";
+  guess.value = "";
+  guess.focus();
+}
+
+function check(){
+  if (locked) return; // ignore any attempt after the answer is revealed
+
+  let g = guess.value.trim().toLowerCase();
+  tries++;
+
+  if (g === current.name.toLowerCase()) {
+    answer.textContent = "🎉 Correct! The answer was " + current.name + ".";
+    answer.className = "mt-4 fw-bold correct";
+    lockInput();
+  } else if (tries >= 3) {
+    answer.textContent = `Not quite — the answer was ${current.name}. Try a new mystery!`;
+    answer.className = "mt-4 fw-bold incorrect";
+    lockInput();
+  } else {
+    answer.textContent = "Not quite. Try again!";
+    answer.className = "mt-4 fw-bold incorrect";
+  }
+}
+
+function lockInput(){
+  locked = true;
+  guess.disabled = true;
+  checkBtn.disabled = true;
+}
+
+newMystery(); // start the first round automatically
+</script></body></html>
