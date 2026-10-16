@@ -1,0 +1,2 @@
+# Worldcore
+A world encyclopedia
